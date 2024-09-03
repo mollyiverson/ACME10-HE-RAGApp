@@ -8,7 +8,16 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
 
 ### Additional information about the project
 
-TODO: Write a compelling/creative/informative project description / summary
+- **Client:**
+  - [HackerEarth](https://www.hackerearth.com/), based in San Francisco, offers enterprise software for technical hiring. Organizations use their platform to create coding assessments, conduct remote video interviews, and ensure unbiased, AI-powered evaluation of candidates.
+- **RAG application:**
+  - Retrieval Augmented Generation (RAG) means supplying a Large Language Model (LLM) with the appropriate processed data from an outside knowledge base. We will use Knowledge graphs and vector search to optimize data retrieval. 
+- **Potential Knowledge Graph tools:**
+  - DBpedia, YAGO, or other knowledge graphs (KG) of your choice, and use SPARQL to query the KG.
+- **Potential vector search tools:**
+  - FAISS, Annoy, Pinecone, or other vector search libraries.
+- **Potential LLMs:**
+  - OpenAI, or free models such as Microsoft Phi, Smaller version of LLaMA, etc.
 
 ## Installation
 
