@@ -4,7 +4,7 @@
 
 ### One-sentence description of the project
 
-TODO: A 20-second elevator pitch of your project - its core idea summarized in one sentence.
+We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEarth](https://www.hackerearth.com/) that will utilize vector search, knowledge graphs, and a LLM to answer questions and generate content from a knowledge base of more than 10,000 Wikipedia articles.
 
 ### Additional information about the project
 
