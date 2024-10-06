@@ -1,5 +1,7 @@
 # Sprint 1 Report (8/26/2024 - 10/5/2024)
 
+[Sprint 1 Video Link](https://youtu.be/U1f69q2RWyA)
+
 ## What's New (User Facing)
 * Completed Project Description
 * Completed Requirements and Specifications
