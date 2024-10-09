@@ -14,7 +14,6 @@ In this sprint, our team focused on defining and refining the core requirements 
 
 ## Completed Issues/User Stories
 Here are links to the issues that we completed in this sprint:
-
  * [Intro for Project Description](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/1)
  * [Client and Stakeholder Info for Project Description](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/4)
  * [Glossary, References, and Table of Contents for Project Description](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/5)
