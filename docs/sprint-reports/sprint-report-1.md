@@ -48,3 +48,4 @@ Here's what we'd like to improve:
 Here are changes we plan to implement in the next sprint:
 * Improved time management for technical learning: Team members will allocate specific time blocks for skill development to prevent overlaps with project work.
 * Prototyping focus: Begin coding and prototyping the RAG model earlier in the sprint to ensure more testing and iterations before the final presentation.
+
