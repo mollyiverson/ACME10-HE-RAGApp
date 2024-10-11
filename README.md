@@ -44,14 +44,15 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    cd ACME10-HE-RAGApp
    ```
 
-<!-- 2. **Install Backend Dependencies:**
+2. **Install Backend Dependencies:**
    ```bash
    cd backend
    python3 -m venv venv
-   source venv/bin/activate  # On Windows: `venv\Scripts\activate`
+   source venv/bin/activate  
+   # On Windows: `venv\Scripts\activate`
    pip install -r requirements.txt
    ```
-
+<!-- 
 3. **Install Frontend Dependencies:**
    ```bash
    cd ../frontend
