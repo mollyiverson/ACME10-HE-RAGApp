@@ -3,32 +3,27 @@ import os
 import pandas as pd
 
 '''
-Extracts simple data file info from parquet file.
+Extracts the rows/text from the parquet file.
 '''
+# Extract all data from the Parquet file
+def extract_parquet_data(parquet_file_path):
+    try:
+        parquet_file = pq.ParquetFile(parquet_file_path)
+        batch_dataframe = []
 
-# Use the absolute path to the Parquet file
+        for i in parquet_file.iter_batches(batch_size=350):
+            batch_dataframe.append(i.to_pandas())
+
+        # Concatenate all batches into a single DataFrame
+        all_data = pd.concat(batch_dataframe, ignore_index=True)
+        
+        return all_data
+    
+    except FileNotFoundError as e:
+        print("Error:", e)
+
+# Load the data
 parquet_file_path = os.path.abspath('simpleWikiData.parquet')
-print("Attempting to open:", parquet_file_path)
 
-# Initialize a list to store DataFrames
-batch_dataframe = []
-
-# Open the Parquet file
-try:
-    parquet_file = pq.ParquetFile(parquet_file_path)
-
-    # Iterate through batches and convert to DataFrames
-    for i in parquet_file.iter_batches(batch_size=350):
-        batch_dataframe.append(i.to_pandas())
-    
-    # Concatenate all DataFrames into a single DataFrame
-    all_data = pd.concat(batch_dataframe, ignore_index=True)
-
-    # Display the first few rows of the DataFrame
-    print("First 10 rows of the DataFrame:")
-    print(all_data.head(10))
-
-    print(f"Number of text rows: {len(all_data)}")
-    
-except FileNotFoundError as e:
-    print("Error:", e)
+# Extract all rows of data
+all_data = extract_parquet_data(parquet_file_path)
