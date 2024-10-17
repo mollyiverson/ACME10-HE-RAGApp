@@ -52,13 +52,13 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    # On Windows: `venv\Scripts\activate`
    pip install -r requirements.txt
    ```
-<!-- 
 3. **Install Frontend Dependencies:**
+- Download [Node.js (LTS)](https://nodejs.org/en)
    ```bash
    cd ../frontend
    npm install
    ```
-
+<!-- 
 4. **Run Backend:**
    ```bash
    cd ../backend
