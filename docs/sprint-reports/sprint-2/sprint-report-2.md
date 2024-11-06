@@ -6,6 +6,7 @@
 * Developed a basic chat interface for the RAG application in Figma, with user input and response capabilities.
 * Integrated BERT embeddings for a subset of the Wikipedia dataset, essential for vector search functionality.
 * Set up initial DBpedia querying for knowledge graph integration.
+* Wrote some query processing code using NLP libraries.
 * Created the foundational system architecture documentation, including database optimization strategies.
 
 ## Work Summary (Developer Facing)
@@ -43,8 +44,9 @@ Here are links to issues we worked on but did not complete in this sprint:
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
 * [generate_embeddings.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/src/data/generate_embeddings.py) - Code for generating BERT embeddings on the Wikipedia dataset.
-* [Frontend Prototype - Chat Interface](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/frontend/chat_interface.js) - Basic chat interface for user interaction.
-* [DBpedia Querying Code](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/dbpedia_query.py) - Code to set up and test querying with DBpedia.
+* [Frontend Prototype - Chat Interface](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/rag-app/src/App.tsx) - Basic chat interface for user interaction using React.
+* [DBpedia Querying Code](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/src/dbpediaQuery.py) - Code to set up and test querying with DBpedia.
+* [Natural language processing code](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/src/nlp_handler.py) - Code to break down the query into entities before vector search and knowledge graph querying.
 
 ## Retrospective Summary
 Here's what went well:
@@ -60,5 +62,7 @@ Here's what we'd like to improve:
 Here are changes we plan to implement in the next sprint:
 * Prioritize GPU support for faster embedding generation and handling larger datasets.
 * Begin integration of FAISS indexing to enable vector search with the generated embeddings.
-* Expand frontend capabilities to include user registration and session saving for enhanced user experience.
+* Set up an LLM to generate responses from data given a query.
+* Fully integrate NLP and KG into the pipeline.
+* Write unit and integration tests.
 * Continue developing the backend to combine vector search results with knowledge graph data for more accurate responses.
