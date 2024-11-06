@@ -43,7 +43,7 @@ Here are links to issues we worked on but did not complete in this sprint:
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
-* [generate_embeddings.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/src/data/generate_embeddings.py) - Code for generating BERT embeddings on the Wikipedia dataset.
+* [generate_embeddings.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/src/data/generate_embeddings) - Code for generating BERT embeddings on the Wikipedia dataset.
 * [Frontend Prototype - Chat Interface](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/rag-app/src/App.tsx) - Basic chat interface for user interaction using React.
 * [DBpedia Querying Code](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/src/dbpediaQuery.py) - Code to set up and test querying with DBpedia.
 * [Natural language processing code](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/src/nlp_handler.py) - Code to break down the query into entities before vector search and knowledge graph querying.
