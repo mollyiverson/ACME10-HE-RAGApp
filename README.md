@@ -50,6 +50,7 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    python3 -m venv venv
    source venv/bin/activate  
    # On Windows: `venv\Scripts\activate`
+   # On Linux: `source venv/Scripts/activate`
    pip install -r requirements.txt
    ```
 3. **Install Frontend Dependencies:**
@@ -59,11 +60,11 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    npm install
    npm start
    ```
-<!-- 
+
 4. **Run Backend:**
    ```bash
    cd ../backend
-   uvicorn app:main --reload
+   python -m uvicorn app.main:app --reload
    ```
 
 5. **Run Frontend:**
@@ -72,7 +73,13 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    npm start
    ```
 
-The application should now be running on `localhost` for both frontend and backend. -->
+6. **Run Tests:**
+   ```bash
+   cd ACME10-HE-RAGApp
+   pytest -s  # -s is optional if you want print statements to show
+   ```
+
+The application should now be running on `localhost` for both frontend and backend.
 
 
 ## Functionality
