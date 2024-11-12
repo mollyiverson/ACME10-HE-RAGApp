@@ -1,6 +1,8 @@
-import pytest
+import spacy
 from fastapi.testclient import TestClient
-from app.main import app
+from backend.app.main import app
+
+nlp = spacy.load("en_core_web_sm")
 
 client = TestClient(app)
 
