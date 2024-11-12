@@ -56,8 +56,9 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
 3. **Install Frontend Dependencies:**
 - Download [Node.js (LTS)](https://nodejs.org/en)
    ```bash
-   cd ../frontend
+   cd ../rag-app
    npm install
+   npm start
    ```
 
 4. **Run Backend:**
@@ -68,7 +69,7 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
 
 5. **Run Frontend:**
    ```bash
-   cd ../frontend
+   cd ../rag-app
    npm start
    ```
 
