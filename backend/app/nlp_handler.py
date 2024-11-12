@@ -1,7 +1,6 @@
 import spacy
 from fastapi import APIRouter
 from pydantic import BaseModel
-from spacy.tokens import Span
 
 router = APIRouter()
 nlp = spacy.load("en_core_web_sm")
@@ -30,7 +29,13 @@ def tokenize_text(doc):
 def generate_sparql_query(entities):
     if entities:
         entity = entities[0]["text"]
-        return f"SELECT ?abstract WHERE {{ ?subject rdfs:label \"{entity}\"@en . ?subject dbo:abstract ?abstract . }}"
+        return f"""
+        SELECT ?abstract WHERE {{
+            ?subject rdfs:label "{entity}"@en .
+            ?subject dbo:abstract ?abstract .
+            FILTER (lang(?abstract) = 'en')
+        }}
+        """
     return None
 
 

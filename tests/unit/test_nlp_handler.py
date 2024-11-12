@@ -7,6 +7,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 nlp = spacy.load("en_core_web_sm")
 client = TestClient(app)
 
+
 def test_process_query_basic():
     response = client.post("/nlp/process_query",
                            json={"query": "What is the capital of France?"})
