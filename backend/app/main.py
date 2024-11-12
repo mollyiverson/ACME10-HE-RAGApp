@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .nlp_handler import router as nlp_router
-from .dbpedia_query import router as dbpedia_router
+from .dbpedia_query_handler import router as dbpedia_router
 
 app = FastAPI()
 
