@@ -59,7 +59,6 @@ def test_process_query_multiple_entities():
         "/nlp/process_query", json={"query": "Tell me about the Eiffel Tower in Paris."})
     assert response.status_code == 200
     data = response.json()
-    print("data: ", data)
 
     # Check that both "Eiffel Tower" and "Paris" are recognized as entities
     assert len(data["entities"]) > 1
