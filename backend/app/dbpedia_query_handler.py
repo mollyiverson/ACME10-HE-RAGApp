@@ -1,23 +1,29 @@
-from fastapi import APIRouter, FastAPI
+import logging
+import urllib.parse
+from fastapi import APIRouter
+from pydantic import BaseModel
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 router = APIRouter()
 
+class Query(BaseModel):
+    query: str
 
-def query_dbpedia(query: str):
+@router.post("/querykg")
+def query_dbpedia(query: Query):
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
-    sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
-    results = sparql.query().convert()
-    return results
 
+    logging.info("SPARQL query being sent: %s", query.query)
 
-@router.get("/querykg")
-def read_query(subject: str, predicate: str):
-    query = f"""
-    SELECT ?object WHERE {{
-        dbr:{subject} dbo:{predicate} ?object
-    }}
-    """
-    results = query_dbpedia(query)
-    return results
+    try:
+        sparql.setQuery(query.query)
+        results = sparql.query().convert()
+        return results
+    except Exception as e:
+        logging.error("Error executing SPARQL query: %s", e)
+        raise
+
+"""Helper function to format DBpedia resources by encoding special characters."""
+def encode_resource(name: str) -> str:
+    return urllib.parse.quote(name.replace(" ", "_"))
