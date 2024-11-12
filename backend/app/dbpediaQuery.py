@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-app = FastAPI()
+router = APIRouter()
+
 
 def query_dbpedia(query: str):
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -11,7 +12,7 @@ def query_dbpedia(query: str):
     return results
 
 
-@app.get("/querykg")
+@router.get("/querykg")
 def read_query(subject: str, predicate: str):
     query = f"""
     SELECT ?object WHERE {{
