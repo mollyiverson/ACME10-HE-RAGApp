@@ -10,7 +10,32 @@ function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userMessage, setUserMessage] = useState('');
 
-  const handleSubmit = (e: FormEvent) => {
+  const callNlpEndpoint = async (query: string) => {
+    try {
+      const response = await fetch('http://localhost:8000/nlp/process_query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        throw new Error('Error: Unable to process the query.');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error('Error: Unable to connect to the server.');
+      } else {
+        throw error;
+      }
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (userMessage.trim() === '') return;
 
@@ -22,14 +47,33 @@ function App() {
     setMessages([...messages, newMessage]);
     setUserMessage('');
 
-    // Basic response from the RAG model
-    setTimeout(() => {
-      const ragResponse: Message = {
-        text: 'RAG Model gives appropriate response',
+    try {
+      const data = await callNlpEndpoint(userMessage);
+      const botMessage: Message = {
+        text: `Tokens: ${data.tokens.join(', ')}\nEntities: ${data.entities.join(', ')}\nIs Harmful: ${data.is_harmful}`,
         sender: 'bot',
       };
-      setMessages((prevMessages) => [...prevMessages, ragResponse]);
-    }, 1000);
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
+
+      // Here you can call the DBpedia function with the NLP data
+      // For example:
+      // await callDbpediaFunction(data);
+
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorMessage: Message = {
+          text: error.message,
+          sender: 'bot',
+        };
+        setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      } else {
+        const errorMessage: Message = {
+          text: 'An unknown error occurred.',
+          sender: 'bot',
+        };
+        setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      }
+    }
   };
 
   return (
