@@ -34,7 +34,7 @@
 - Current challenge with processing user input into SPARQL queries for DBpedia
 
 ### Key Discussion Points:
-- **Discussion Point 1**: Storing Embeddings data: Vikas recommended we use SQLite (vss extension) or [MeiliSearch\(https://www.meilisearch.com/). We should embed a small portion of the Wikipedia dataset once and store it forever in the database. We can store both the Wikipedia dataset and embeddings.
+- **Discussion Point 1**: Storing Embeddings data: Vikas recommended we use SQLite (vss extension) or [MeiliSearch](https://www.meilisearch.com/). We should embed a small portion of the Wikipedia dataset once and store it forever in the database. We can store both the Wikipedia dataset and embeddings.
 - **Discussion Point 2**: Vector Search pipeline: Vector search with embeddings and text search and comparing the results. The most relevant results will be found in both methods. We can use a heuristic to rank the results and pass them to the LLM to generate a response.
 - **Discussion Point 3**: Natural language processing: it's difficult to process more complex commands that have multiple entities and relationships (e.g. Who is the father of Abraham Lincoln?). Vikas recognized that this is a complex topic and we could dedicate a whole sprint toward it. Companies have products solely dedicated toward it.
 
