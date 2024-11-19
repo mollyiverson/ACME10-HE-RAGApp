@@ -7,7 +7,6 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 nlp = spacy.load("en_core_web_sm")
 client = TestClient(app)
 
-
 def test_process_query_basic():
     response = client.post("/nlp/process_query",
                            json={"query": "What is the capital of France?"})
@@ -31,9 +30,15 @@ def test_process_query_basic():
     # Validate harmful intent detection
     assert data["is_harmful"] is False
 
-    # Validate SPARQL query generation
-    assert data["sparql_query"] == 'SELECT ?abstract WHERE { ?subject rdfs:label "France"@en . ?subject dbo:abstract ?abstract . }'
-
+    # Normalize whitespace in SPARQL query for comparison
+    expected_query = '''
+    SELECT ?abstract WHERE {
+        ?subject rdfs:label "France"@en .
+        ?subject dbo:abstract ?abstract .
+        FILTER (lang(?abstract) = 'en')
+    }
+    '''
+    assert ' '.join(data["sparql_query"].split()) == ' '.join(expected_query.split()), f"SPARQL query mismatch: {data['sparql_query']}"
 
 def test_process_query_harmful_intent():
     response = client.post("/nlp/process_query",
