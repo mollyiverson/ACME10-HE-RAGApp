@@ -44,7 +44,9 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    cd ACME10-HE-RAGApp
    ```
 
-2. **Install Backend Dependencies:**
+Set up two terminals.
+
+2. **Install Backend Dependencies in terminal 1:**
    ```bash
    cd backend
    python3 -m venv venv
@@ -53,23 +55,23 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    # On Linux: `source venv/Scripts/activate`
    pip install -r requirements.txt
    ```
-3. **Install Frontend Dependencies:**
+3. **Install Frontend Dependencies in terminal 2:**
 - Download [Node.js (LTS)](https://nodejs.org/en)
    ```bash
-   cd ../rag-app
+   cd ../frontend/rag-app
    npm install
    npm start
    ```
 
-4. **Run Backend:**
+4. **Run Backend in terminal 1:**
    ```bash
    cd ../backend
    python -m uvicorn app.main:app --reload
    ```
 
-5. **Run Frontend:**
+5. **Run Frontend in terminal 2:**
    ```bash
-   cd ../rag-app
+   cd ../frontend/rag-app
    npm start
    ```
 
