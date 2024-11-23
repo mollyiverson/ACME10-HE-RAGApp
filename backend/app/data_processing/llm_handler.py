@@ -1,5 +1,5 @@
 import numpy as np
-from vector_search_handler import VectorSearchHandler
+from .vector_search_handler import VectorSearchHandler
 from transformers import pipeline
 
 
@@ -10,13 +10,15 @@ class LLMHandler:
         Initialize the LLM handler with a specified model and vector search handler.
         """
         self.llm = pipeline("text-generation", model=model_name)
-        self.vector_search_handler = VectorSearchHandler(embedding_path=embedding_path)
+        self.vector_search_handler = VectorSearchHandler(
+            embedding_path=embedding_path)
 
     def get_vector_search_results(self, query_vector, top_k=5):
         """
         Perform vector search and retrieve top-k results.
         """
-        distances, indices = self.vector_search_handler.search(query_vector, top_k=top_k)
+        distances, indices = self.vector_search_handler.search(
+            query_vector, top_k=top_k)
         return {"distances": distances, "indices": indices}
 
     def format_query(self, vector_search_results, kg_output):
@@ -36,7 +38,8 @@ class LLMHandler:
         """
         Query the LLM and return a formatted response.
         """
-        response = self.llm(query, max_length=max_length, temperature=temperature, do_sample=True)
+        response = self.llm(query, max_length=max_length,
+                            temperature=temperature, do_sample=True)
         return response[0]["generated_text"]
 
 
@@ -50,7 +53,8 @@ if __name__ == "__main__":
     example_query_vector = np.expand_dims(embeddings[0], axis=0)
 
     # Perform vector search
-    vector_search_results = llm_handler.get_vector_search_results(example_query_vector, top_k=5)
+    vector_search_results = llm_handler.get_vector_search_results(
+        example_query_vector, top_k=5)
 
     # Mock knowledge graph output
     kg_output = "Connections between natural language processing and AI ethics."
