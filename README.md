@@ -78,6 +78,8 @@ Set up two terminals.
 6. **Run Tests:**
    ```bash
    cd ACME10-HE-RAGApp
+   set PYTHONPATH=%cd%  
+   # On macOS/Linux: `export PYTHONPATH=$(pwd)`
    pytest -s  # -s is optional if you want print statements to show
    ```
 

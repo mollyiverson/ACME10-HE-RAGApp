@@ -10,6 +10,7 @@
 /__pycache__/
 /__pytest_cache__/
 /.pytest_cache/
+*.pyc
 
 # production
 /build
@@ -28,3 +29,6 @@ venv/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# index
+index.faiss
