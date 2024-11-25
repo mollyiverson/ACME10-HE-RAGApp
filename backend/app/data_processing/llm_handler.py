@@ -1,7 +1,6 @@
 import numpy as np
-from .vector_search_handler import VectorSearchHandler
+from vector_search_handler import VectorSearchHandler
 from transformers import pipeline
-
 
 class LLMHandler:
     def __init__(self, model_name="meta-llama/Llama-2-7b-chat-hf",

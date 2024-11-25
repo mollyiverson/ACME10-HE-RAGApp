@@ -10,7 +10,6 @@ TEXT_COLUMN = "text"  # Replace with the name of the column containing text
 OUTPUT_DIR = "embeddings_output"  # Directory to save embeddings
 BATCH_SIZE = 16  # Adjust based on your GPU/CPU memory
 
-
 # Step 1: Load Dataset
 def load_dataset(file_path):
     print("Loading dataset...")
