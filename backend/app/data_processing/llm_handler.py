@@ -37,7 +37,7 @@ class LLMHandler:
         """
         Query the LLM and return a formatted response.
         """
-        response = self.llm(query, max_length=max_length,
+        response = self.llm(query, max_length=max_length, truncation=True,
                             temperature=temperature, do_sample=True)
         return response[0]["generated_text"]
 
@@ -49,7 +49,13 @@ if __name__ == "__main__":
 
     # Load embeddings and use the first vector as a test query
     embeddings = np.load("embeddings_output/text_embeddings.npy")
-    example_query_vector = np.expand_dims(embeddings[0], axis=0)
+    #example_query_vector = np.expand_dims(embeddings[0], axis=0)    
+    example_query_text = "What is April?"
+    example_query_vector = llm_handler.vector_search_handler.embed_query(example_query_text)
+
+    # Build a vector index and load
+    llm_handler.vector_search_handler.build_index(embeddings)
+    llm_handler.vector_search_handler.load_index()
 
     # Perform vector search
     vector_search_results = llm_handler.get_vector_search_results(

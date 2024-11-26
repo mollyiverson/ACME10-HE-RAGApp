@@ -1,3 +1,5 @@
+from transformers import BertTokenizer, BertModel
+import torch
 import faiss
 import numpy as np
 import os
@@ -7,6 +9,13 @@ class VectorSearchHandler:
         self.embedding_path = embedding_path
         self.index_path = index_path
         self.index = None
+
+        # Initialize BERT tokenizer and model
+        self.tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+        self.model = BertModel.from_pretrained("bert-base-uncased")
+        self.model.eval()
+        if torch.cuda.is_available():
+            self.model = self.model.cuda()
 
     def load_embeddings(self):
         """Load embeddings from the specified path."""
@@ -29,6 +38,21 @@ class VectorSearchHandler:
         if not os.path.exists(self.index_path):
             raise FileNotFoundError(f"Index file not found: {self.index_path}")
         self.index = faiss.read_index(self.index_path)
+    
+    def embed_query(self, query):
+        """
+        Generate an embedding for the query using BERT.
+        """
+        inputs = self.tokenizer(query, return_tensors="pt", padding=True, truncation=True, max_length=512)
+        if torch.cuda.is_available():
+            inputs = {key: val.cuda() for key, val in inputs.items()}
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+            # Use the CLS token representation for the query embedding
+            query_embedding = outputs.last_hidden_state[:, 0, :].cpu().numpy()
+
+        return query_embedding
+
 
     def search(self, query_vector, top_k=5):
         """Search the FAISS index for the most similar vectors."""
