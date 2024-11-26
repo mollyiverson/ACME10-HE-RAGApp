@@ -11,13 +11,33 @@ OUTPUT_DIR = "embeddings_output"  # Directory to save embeddings
 BATCH_SIZE = 16  # Adjust based on your GPU/CPU memory
 
 # Step 1: Load Dataset
-def load_dataset(file_path):
+def load_dataset(dataset_path):
     print("Loading dataset...")
-    data = pd.read_parquet(file_path)
+    data = pd.read_parquet(dataset_path)
+    print(f"Loaded {len(data)} rows of text.")
+
     return data
 
+# Step 2: Clean the dataset
+def clean_dataset(data):
+    print("Cleaning dataset...")
+    # Filter out rows where the TEXT_COLUMN is NaN
+    cleaned_data = data[[TEXT_COLUMN]].dropna()  # Retain the DataFrame structure
+    print(f"Cleaned data: {len(cleaned_data)} rows remaining.")
 
-# Step 2: Prepare BERT Model and Tokenizer
+    return cleaned_data
+
+# Step 3: Save the cleaned dataset
+def save_dataset(data, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Save cleaned data as parquet
+    texts_path = os.path.join(output_dir, "clean_wiki_data.parquet")
+    data.to_parquet(texts_path)
+
+    print(f"Cleaned dataset saved to: {texts_path}")
+
+# Step 4: Prepare BERT Model and Tokenizer
 def load_bert_model():
     print("Loading BERT model...")
     tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
@@ -28,7 +48,7 @@ def load_bert_model():
     return tokenizer, model
 
 
-# Step 3: Generate Embeddings
+# Step 5: Generate Embeddings
 def generate_embeddings(texts, tokenizer, model, batch_size=16):
     embeddings = []
     for i in range(0, len(texts), batch_size):
@@ -45,7 +65,7 @@ def generate_embeddings(texts, tokenizer, model, batch_size=16):
     return np.vstack(embeddings)
 
 
-# Step 4: Save Embeddings
+# Step 6: Save Embeddings
 def save_embeddings(embeddings, output_dir):
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "text_embeddings.npy")
@@ -59,11 +79,14 @@ def main():
     data = load_dataset(DATA_FILE)
 
     # Filter out rows with empty text
-    texts = data[TEXT_COLUMN].dropna().tolist()
+    clean_data = clean_dataset(data)
+
+    # Save the cleaned dataset
+    save_dataset(clean_data, OUTPUT_DIR)
 
     # **Modify this line to use only a subset for testing**
     subset_size = 100  # Number of rows to use for testing
-    texts = texts[:subset_size]  # Select only the first `subset_size` rows
+    texts = clean_data[TEXT_COLUMN].iloc[:subset_size].tolist()  # Extract a subset of text as a list
 
     print(f"Loaded {len(texts)} rows of text for embedding.")
 
