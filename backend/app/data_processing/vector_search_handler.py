@@ -84,6 +84,12 @@ class VectorSearchHandler:
         
         # Use inner product (which returns similarities, not distances)
         similarities, indices = self.index.search(query_vector_normalized, top_k)
+
+        print("Index-Similarity Scores:")
+        for i, s in zip(indices[0], similarities[0]):
+            print(f"Index {i}: {s}")
+        print("\n")
+
         return similarities, indices
     
     def print_search_results(self, indices, dataset_path="embeddings_output/clean_wiki_data.parquet"):
@@ -97,7 +103,7 @@ class VectorSearchHandler:
         # Print the relevant results
         print("Relevant results from embeddings:")
         for i, text in zip(indices[0], selected_texts):
-            print(f"Index: {i}: {text}\n")
+            print(f"Index {i}: {text}\n")
 
 # Example Usage
 if __name__ == "__main__":
@@ -110,7 +116,7 @@ if __name__ == "__main__":
     # Search example (query vector must have the same dimension as embeddings)
     example_query_text = "Who is Alan Turing?"
     example_query_vector = handler.embed_query(example_query_text)
-    distances, indices = handler.search(example_query_vector)
+    similarities, indices = handler.search(example_query_vector)
     
     # Print search results
     handler.print_search_results(indices)
