@@ -2,6 +2,7 @@ from transformers import BertTokenizer, BertModel
 import torch
 import faiss
 import numpy as np
+import pandas as pd
 import os
 
 class VectorSearchHandler:
@@ -24,14 +25,16 @@ class VectorSearchHandler:
         return np.load(self.embedding_path)
 
     def build_index(self, embeddings):
-        """Build a FAISS index from the embeddings."""
+        """Build a FAISS index with cosine similarity (as opposed to L2 distance)."""
+        # Normalize embeddings
+        embeddings_normalized = embeddings / np.linalg.norm(embeddings, axis=1)[:, np.newaxis]
+        
         dimension = embeddings.shape[1]
-        self.index = faiss.IndexFlatL2(dimension)  # Use L2 (Euclidean) distance
-        self.index.add(embeddings)
+        # Use Inner Product index for cosine similarity
+        self.index = faiss.IndexFlatIP(dimension)  
+        self.index.add(embeddings_normalized)
         print(f"Index built with {self.index.ntotal} vectors.")
 
-        # Optionally save the index
-        faiss.write_index(self.index, self.index_path)
 
     def load_index(self):
         """Load an existing FAISS index."""
@@ -41,25 +44,60 @@ class VectorSearchHandler:
     
     def embed_query(self, query):
         """
-        Generate an embedding for the query using BERT.
+        Generate an embedding for the query using BERT with mean pooling.
         """
         inputs = self.tokenizer(query, return_tensors="pt", padding=True, truncation=True, max_length=512)
         if torch.cuda.is_available():
             inputs = {key: val.cuda() for key, val in inputs.items()}
+        
         with torch.no_grad():
             outputs = self.model(**inputs)
-            # Use the CLS token representation for the query embedding
-            query_embedding = outputs.last_hidden_state[:, 0, :].cpu().numpy()
-
+            # Mean pooling
+            attention_mask = inputs['attention_mask']
+            token_embeddings = outputs.last_hidden_state
+            
+            # Create mask of which tokens are padding
+            input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+            
+            # Sum embeddings while respecting the attention mask
+            sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
+            
+            # Count of non-padding tokens
+            sum_mask = input_mask_expanded.sum(1)
+            
+            # Avoid division by zero
+            sum_mask = torch.clamp(sum_mask, min=1e-9)
+            
+            # Calculate mean
+            query_embedding = sum_embeddings / sum_mask
+            query_embedding = query_embedding.cpu().numpy()
+        
         return query_embedding
 
-
     def search(self, query_vector, top_k=5):
-        """Search the FAISS index for the most similar vectors."""
+        """Search the FAISS index with normalized query vector."""
         if self.index is None:
             raise ValueError("Index is not loaded. Build or load an index first.")
-        distances, indices = self.index.search(query_vector, top_k)
-        return distances, indices
+        
+        # Normalize query vector
+        query_vector_normalized = query_vector / np.linalg.norm(query_vector, axis=1)[:, np.newaxis]
+        
+        # Use inner product (which returns similarities, not distances)
+        similarities, indices = self.index.search(query_vector_normalized, top_k)
+        return similarities, indices
+    
+    def print_search_results(self, indices, dataset_path="embeddings_output/clean_wiki_data.parquet"):
+        """Print the top search results with their corresponding texts."""
+        # Load the dataset
+        original_data = pd.read_parquet(dataset_path)
+        
+        # Extract the texts using the provided indices
+        selected_texts = original_data.iloc[indices[0]]["text"].tolist()
+        
+        # Print the relevant results
+        print("Relevant results from embeddings:")
+        for i, text in zip(indices[0], selected_texts):
+            print(f"Index: {i}: {text}\n")
 
 # Example Usage
 if __name__ == "__main__":
@@ -70,6 +108,9 @@ if __name__ == "__main__":
     handler.build_index(embeddings)
 
     # Search example (query vector must have the same dimension as embeddings)
-    example_query = np.expand_dims(embeddings[0], axis=0)  # Use the first vector as a query
-    distances, indices = handler.search(example_query)
-    print(f"Top results: {indices}, Distances: {distances}")
+    example_query_text = "Who is Alan Turing?"
+    example_query_vector = handler.embed_query(example_query_text)
+    distances, indices = handler.search(example_query_vector)
+    
+    # Print search results
+    handler.print_search_results(indices)
