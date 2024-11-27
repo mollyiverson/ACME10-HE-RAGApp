@@ -90,20 +90,23 @@ class VectorSearchHandler:
             print(f"Index {i}: {s}")
         print("\n")
 
-        return similarities, indices
+        return similarities[0], indices[0]
     
-    def print_search_results(self, indices, dataset_path="embeddings_output/clean_wiki_data.parquet"):
-        """Print the top search results with their corresponding texts."""
+    def get_search_results(self, indices, dataset_path="embeddings_output/clean_wiki_data.parquet"):
+        """Get the corresponding texts of the top VS results."""
         # Load the dataset
         original_data = pd.read_parquet(dataset_path)
         
         # Extract the texts using the provided indices
-        selected_texts = original_data.iloc[indices[0]]["text"].tolist()
+        selected_texts = original_data.iloc[indices]["text"].tolist()
         
         # Print the relevant results
         print("Relevant results from embeddings:")
-        for i, text in zip(indices[0], selected_texts):
+        for i, text in zip(indices, selected_texts):
             print(f"Index {i}: {text}\n")
+        
+        return selected_texts 
+
 
 # Example Usage
 if __name__ == "__main__":
@@ -118,5 +121,5 @@ if __name__ == "__main__":
     example_query_vector = handler.embed_query(example_query_text)
     similarities, indices = handler.search(example_query_vector)
     
-    # Print search results
-    handler.print_search_results(indices)
+    # Get search results
+    handler.get_search_results(indices)
