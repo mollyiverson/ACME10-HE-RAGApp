@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .nlp_handler import router as nlp_router
-from .dbpedia_query_handler import router as dbpedia_router
+from .nlp_router import router as nlp_router
+from .dbpedia_query_router import router as dbpedia_router
 
 app = FastAPI()
 

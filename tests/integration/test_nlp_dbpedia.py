@@ -2,7 +2,7 @@ import pytest
 import warnings
 from fastapi.testclient import TestClient
 from backend.app.main import app
-from backend.app.nlp_handler import generate_sparql_query
+from backend.app.nlp_router import generate_sparql_query
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 client = TestClient(app)
