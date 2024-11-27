@@ -28,29 +28,50 @@ class LLMHandler:
         Combine VS and KG outputs into a single natural-language query.
         """
         # Join the array of vector search results with newlines
-        formatted_vs_results = "\n".join([f"- {result}" for result in vector_search_text_results])
-
+        # Handle empty or missing results gracefully
+        formatted_vs_results = (
+            "\n".join([f"- {result}" for result in vector_search_text_results])
+            if vector_search_text_results else "No relevant vector search results were found."
+        )
+        
+        formatted_kg_output = (
+            f"Additional context: {kg_output}" if kg_output else "No additional context available from the knowledge graph."
+        )
+        
         query = f"""
-            Question: {original_query}
-
-            Context from vector search results based on the query:
+            Query:
+            {original_query}
+            
+            Vector Search Results:
             {formatted_vs_results}
-
-            Context from the knowledge graph based on the query:
-            "{kg_output}"
-        """
+            
+            Knowledge Graph Context:
+            {formatted_kg_output}
         
+            Instructions:
+            - Use the information from the vector search results and the knowledge graph context to provide a concise and accurate response to the query.
+            - Avoid repeating the input query in your response.
+            - Provide only relevant information that answers the query directly.
+        """
         return query
-
-
-    def query_llm(self, query, max_new_tokens=300, temperature=0.7):
+    
+    def query_llm(self, query, max_new_tokens=200, temperature=0.5):
         """
-        Query the LLM and return a formatted response.
+        Generate a response from the LLM, excluding the prompt tokens.
         """
-        response = self.llm(query, max_new_tokens=max_new_tokens,
-                            temperature=temperature, do_sample=True)
-        
-        return response[0]["generated_text"]
+        # Generate the response with the pipeline
+        response = self.llm(query,
+                            max_new_tokens=max_new_tokens,
+                            temperature=temperature,
+                            do_sample=True)
+
+        # Extract generated text and remove the prompt part
+        full_text = response[0]["generated_text"]
+
+        # Use tokenized length to slice off the prompt from the full text
+        generated_text = full_text[len(query):].strip()  # Remove the exact query text
+
+        return generated_text
 
 
 # Example Usage
