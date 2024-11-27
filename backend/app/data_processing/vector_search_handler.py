@@ -37,7 +37,9 @@ class VectorSearchHandler:
 
 
     def load_index(self):
-        #TODO: Need to fix this. Loading an existing index leads to bad search results.
+        #######################################################################
+        ### TODO: Refactor to separate NLP handler code and the router code ###
+        #######################################################################
         """Load an existing FAISS index."""
         if not os.path.exists(self.index_path):
             raise FileNotFoundError(f"Index file not found: {self.index_path}")
