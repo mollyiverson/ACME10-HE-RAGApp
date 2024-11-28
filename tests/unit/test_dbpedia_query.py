@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from backend.app.main import app
-from backend.app.dbpedia_query_router import encode_resource
+from backend.app.routers.dbpedia_query_router import encode_resource
 
 
 client = TestClient(app)

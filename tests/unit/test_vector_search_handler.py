@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from backend.app.data_processing.vector_search_handler import VectorSearchHandler
+from backend.app.handlers.vector_search_handler import VectorSearchHandler
 
 
 @pytest.fixture
