@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 from transformers import pipeline
-from vector_search_handler import VectorSearchHandler
+from .vector_search_handler import VectorSearchHandler
 ##############################
 ### TODO: FIX IMPORT ERROR ###
 ##############################
