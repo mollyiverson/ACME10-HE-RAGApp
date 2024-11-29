@@ -1,7 +1,7 @@
 import os
 
 #########################################################
-### TODO: MAKE MORE ROBUST CONFIG FILE FOR FILE PATHS ###
+### TODO: CORRECT ALL OF THESE PATHS ###
 #########################################################
 
 # Base directory for data processing

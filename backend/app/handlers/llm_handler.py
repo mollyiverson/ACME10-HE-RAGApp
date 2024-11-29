@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 from transformers import pipeline
 from .vector_search_handler import VectorSearchHandler
-##############################
-### TODO: FIX IMPORT ERROR ###
-##############################
+##############################################################
+### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
+##############################################################
 #from backend.app.config import EMBEDDINGS_FILE
 
 ### CONFIGS ###

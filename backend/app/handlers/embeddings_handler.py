@@ -4,9 +4,9 @@ import numpy as np
 import torch
 from transformers import BertTokenizer, BertModel
 
-##############################
-### TODO: FIX IMPORT ERROR ###
-##############################
+##############################################################
+### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
+##############################################################
 # from backend.app.config import EMBEDDINGS_DATA_DIR, WIKI_DATA_FILE, CLEAN_WIKI_DATA_FILE
 
 # Configuration
