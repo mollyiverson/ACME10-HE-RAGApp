@@ -1,12 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from backend.app.handlers.vector_search_handler import VectorSearchHandler
+from backend.app.models.vector_search_query import VectorSearchQuery
 
 router = APIRouter()
-
-class VectorSearchQuery(BaseModel):
-    query_text: str
-    top_k: int = 5  # Default value for top_k
 
 # Initialize the VectorSearchHandler
 vector_handler = VectorSearchHandler()

@@ -3,13 +3,9 @@ import urllib.parse
 from fastapi import APIRouter
 from pydantic import BaseModel
 from SPARQLWrapper import SPARQLWrapper, JSON
+from backend.app.models.basic_query import Query
 
 router = APIRouter()
-
-
-class Query(BaseModel):
-    query: str
-
 
 @router.post("/querykg")
 def query_dbpedia(query: Query):
