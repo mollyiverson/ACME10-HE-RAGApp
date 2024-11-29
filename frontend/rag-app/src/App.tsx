@@ -47,7 +47,7 @@ function App() {
     }
   };
 
-  const callDbpediaFunction = async (sparqlQuery: string) => {
+  const callDbpediaFunction = async (sparqlQuery: string): Promise<any> => {
     try {
       const response = await fetch('http://localhost:8000/dbpedia/querykg', {
         method: 'POST',
@@ -56,22 +56,48 @@ function App() {
         },
         body: JSON.stringify({ query: sparqlQuery }),
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
+  
+      if (!response.ok) {
         throw new Error('Error: Unable to process the DBpedia query.');
       }
+  
+      return await response.json();
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error('Error: Unable to connect to the DBpedia server.');
-      } else {
-        throw error;
-      }
+      throw new Error(
+        `Error: Unable to connect to the DBpedia server. ${error instanceof Error ? error.message : ''}`
+      );
     }
   };
-
+  
+  const callVectorSearchFunction = async (query: string): Promise<{ results: string[]; similarities: number[] }> => {
+    try {
+      const response = await fetch('http://localhost:8000/vector_search/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          query_text: query,  // Change from 'query' to 'query_text'
+          top_k: 5            // Add top_k parameter
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error: Unable to process the vector search query.');
+      }
+  
+      const data = await response.json();
+      return {
+        results: data.results.map((result: { text: string }) => result.text),
+        similarities: data.results.map((result: { similarity: number }) => result.similarity),
+      };
+    } catch (error) {
+      throw new Error(
+        `Error: Unable to connect to the vector search server. ${error instanceof Error ? error.message : ''}`
+      );
+    }
+  };
+    
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (userMessage.trim() === '') return;
@@ -100,6 +126,14 @@ function App() {
         };
         setMessages((prevMessages) => [...prevMessages, dbpediaMessage]);
       }
+
+      // Call the vector search function
+      const vectorData = await callVectorSearchFunction(userMessage);
+      const vectorMessage: Message = {
+        text: `Vector Search Results: \n${vectorData.results.join(', ')}`,
+        sender: 'bot',
+      };
+      setMessages((prevMessages) => [...prevMessages, vectorMessage]);
 
     } catch (error) {
       if (error instanceof Error) {

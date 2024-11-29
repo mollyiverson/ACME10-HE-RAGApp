@@ -26,7 +26,7 @@ def query_dbpedia(query: Query):
     try:
         sparql.setQuery(query.query)
         results = sparql.query().convert()
-        print(results)
+
         return results
     except Exception as e:
         logging.error("Error executing SPARQL query: %s", e)

@@ -91,8 +91,11 @@ class VectorSearchHandler:
         """Search the FAISS index with normalized query vector."""
         if self.index is None:
             raise ValueError("Index is not loaded. Build or load an index first.")
+        
         query_vector_normalized = query_vector / np.linalg.norm(query_vector, axis=1)[:, np.newaxis]
+
         similarities, indices = self.index.search(query_vector_normalized, top_k)
+        
         return similarities[0], indices[0]
 
     def get_search_results(self, indices, dataset_path=CLEAN_WIKI_DATA_FILE):
