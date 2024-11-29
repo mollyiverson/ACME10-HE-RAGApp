@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ACME10-HE-RAGApp"
+version = "0.1.0"
+description = "WSU Capstone Project 2023-2024"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*"]
