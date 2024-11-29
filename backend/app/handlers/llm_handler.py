@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from transformers import pipeline
 from .vector_search_handler import VectorSearchHandler
+
 ##############################################################
 ### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
 ##############################################################
@@ -79,7 +80,7 @@ class LLMHandler:
             {formatted_kg_output}
         
             Instructions:
-            - Use the information from the vector search results and the knowledge graph context to provide a concise and accurate response to the query.
+            - Use the information from the vector search results and the knowledge graph context, if they exist, to provide a concise and accurate response to the query.
             - Avoid repeating the input query in your response.
             - Provide only relevant information that answers the query directly.
         """
@@ -99,9 +100,11 @@ class LLMHandler:
         full_text = response[0]["generated_text"]
 
         # Use tokenized length to slice off the prompt from the full text
-        generated_text = full_text[len(query):].strip()  # Remove the exact query text
+        llm_response = full_text[len(query):].strip()  # Remove the exact query text
 
-        return generated_text
+        print(llm_response)
+
+        return llm_response
 
 
 # Example Usage

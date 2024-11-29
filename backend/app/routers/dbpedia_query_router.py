@@ -1,7 +1,6 @@
 import logging
 import urllib.parse
 from fastapi import APIRouter
-from pydantic import BaseModel
 from SPARQLWrapper import SPARQLWrapper, JSON
 from backend.app.models.basic_query import Query
 
@@ -24,6 +23,7 @@ def query_dbpedia(query: Query):
         results = sparql.query().convert()
 
         return results
+    
     except Exception as e:
         logging.error("Error executing SPARQL query: %s", e)
         raise

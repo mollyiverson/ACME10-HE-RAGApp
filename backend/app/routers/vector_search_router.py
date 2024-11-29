@@ -1,19 +1,8 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
 from backend.app.handlers.vector_search_handler import VectorSearchHandler
 from backend.app.models.vector_search_query import VectorSearchQuery
 
 router = APIRouter()
-
-# Initialize the VectorSearchHandler
-vector_handler = VectorSearchHandler()
-
-# Ensure embeddings and index are loaded at startup
-try:
-    vector_handler.load_embeddings()
-    vector_handler.load_index()
-except Exception as e:
-    print(f"Error loading vector search handler: {e}")
 
 @router.post("/search")
 def vector_search(search_query: VectorSearchQuery):

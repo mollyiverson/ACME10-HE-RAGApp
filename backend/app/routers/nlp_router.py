@@ -1,17 +1,17 @@
 import spacy
 from fastapi import APIRouter
-from pydantic import BaseModel
+from backend.app.models.basic_query import Query
+from backend.app.handlers.llm_handler import LLMHandler
 
 router = APIRouter()
 nlp = spacy.load("en_core_web_sm")
 
+# Initialize LLM handler
+llm_handler = LLMHandler()
+
 #######################################################################
 ### TODO: Refactor to separate NLP handler code and the router code ###
 #######################################################################
-
-class Query(BaseModel):
-    query: str
-
 
 def detect_harmful_intent(doc):
     '''
@@ -87,3 +87,32 @@ def process_query(query: Query):
         "is_harmful": is_harmful,
         "sparql_query": sparql_query
     }
+
+@router.post("/llm_response")
+def llm_respond(query: Query, vector_search_results = [], kg_results = ""):
+    """
+    Processes an LLM response for the given query and supporting data.
+    
+    :param query: <Query> Pydantic model containing the user's input text as 'query'.
+    :param vector_search_results: <string> Results from a vector search.
+    :param kg_results: <string> Results from a knowledge graph query.
+    :return: <string> LLM response or an error message.
+    """
+    try:
+        # Format query and get LLM response
+        formatted_query = llm_handler.format_query(query, vector_search_results, kg_results)
+        response = llm_handler.query_llm(formatted_query)
+
+        return { "response": response }
+
+    except ValueError as ve:
+        # Handle specific value-related errors
+        return {"error": "Value error encountered", "details": str(ve)}, 400
+
+    except AttributeError as ae:
+        # Handle attribute-related errors
+        return {"error": "Attribute error encountered", "details": str(ae)}, 400
+
+    except Exception as e:
+        # Catch any other exceptions and return a generic error response
+        return {"error": "An unexpected error occurred", "details": str(e)}, 500
