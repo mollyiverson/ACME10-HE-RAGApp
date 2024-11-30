@@ -34,8 +34,12 @@ CLEAN_WIKI_DATA_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "clean_wiki_data.parque
 EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
 FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
 
+# LLM Model
+LLM_MODEL_NAME = "meta-llama/Llama-2-7b-chat-hf" if not os.getenv("CI") else "distilgpt2" 
+# CI environment has limited resources so it uses a different LLM to save memory
+
 class LLMHandler:
-    def __init__(self, model_name="meta-llama/Llama-2-7b-chat-hf",
+    def __init__(self, model_name=LLM_MODEL_NAME,
                  embedding_path=EMBEDDINGS_FILE):
         """
         Initialize the LLM handler with a specified model and vector search handler.
