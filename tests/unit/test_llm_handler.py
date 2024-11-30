@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from backend.app.data_processing.llm_handler import LLMHandler
+from backend.app.handlers.llm_handler import LLMHandler
 
 
 @pytest.fixture

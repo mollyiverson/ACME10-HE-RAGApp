@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from backend.app.data_processing.vector_search_handler import VectorSearchHandler
+from backend.app.handlers.vector_search_handler import VectorSearchHandler
 
 
 @pytest.fixture
@@ -31,5 +31,5 @@ def test_build_index(vector_search_handler, dummy_embeddings):
 def test_search(vector_search_handler, dummy_embeddings):
     query = np.expand_dims(dummy_embeddings[0], axis=0)
     distances, indices = vector_search_handler.search(query, top_k=3)
-    assert len(indices[0]) == 3  # Ensure we get 3 results
-    assert distances[0][0] == 0.0  # Closest match should have distance 0
+    assert len(indices) == 3  # Ensure we get 3 results
+    assert distances[0] == max(distances)  # Ensure closest match does have the max similarity score retrieved

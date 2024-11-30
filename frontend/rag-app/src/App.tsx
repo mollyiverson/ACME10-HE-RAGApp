@@ -47,7 +47,7 @@ function App() {
     }
   };
 
-  const callDbpediaFunction = async (sparqlQuery: string) => {
+  const callDbpediaFunction = async (sparqlQuery: string): Promise<any> => {
     try {
       const response = await fetch('http://localhost:8000/dbpedia/querykg', {
         method: 'POST',
@@ -56,68 +56,141 @@ function App() {
         },
         body: JSON.stringify({ query: sparqlQuery }),
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
+  
+      if (!response.ok) {
         throw new Error('Error: Unable to process the DBpedia query.');
       }
+  
+      return await response.json();
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error('Error: Unable to connect to the DBpedia server.');
-      } else {
-        throw error;
+      throw new Error(
+        `Error: Unable to connect to the DBpedia server. ${error instanceof Error ? error.message : ''}`
+      );
+    }
+  };
+  
+  const callVectorSearchFunction = async (query: string): Promise<{ results: string[]; similarities: number[] }> => {
+    try {
+      const response = await fetch('http://localhost:8000/vector_search/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          query_text: query,  
+          top_k: 5
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error: Unable to process the vector search query.');
       }
+  
+      const data = await response.json();
+      return {
+        results: data.results.map((result: { text: string }) => result.text),
+        similarities: data.results.map((result: { similarity: number }) => result.similarity),
+      };
+    } catch (error) {
+      throw new Error(
+        `Error: Unable to connect to the vector search server. ${error instanceof Error ? error.message : ''}`
+      );
     }
   };
 
+  const callLlmRespond = async (
+    query: string,
+    vectorResults: string[],
+    kgContext: string
+  ): Promise<string> => {
+    try {
+      const response = await fetch('http://localhost:8000/nlp/llm_response', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query,
+          vector_results: vectorResults,
+          kg_context: kgContext,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error: Unable to process the LLM query.');
+      }
+            
+      const data = await response.json();
+      return data.response;
+
+    } catch (error) {
+      throw new Error(
+        `Error: Unable to connect to the LLM server. ${error instanceof Error ? error.message : ''}`
+      );
+    }
+  };
+  
+    
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (userMessage.trim() === '') return;
-
+  
+    // Add user's message to the chat
     const newMessage: Message = {
       text: userMessage,
       sender: 'user',
     };
-
+  
     setMessages([...messages, newMessage]);
     setUserMessage('');
-
+  
     try {
+      // Call NLP endpoint
       const nlpData = await callNlpEndpoint(userMessage);
       const botMessage: Message = {
         text: `Tokens: ${nlpData.tokens.join(', ')}\nEntities: ${nlpData.entities.map((ent: Entity) => ent.text).join(', ')}\nIs Harmful: ${nlpData.is_harmful}\nSPARQL: ${nlpData.sparql_query}`,
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
+  
+      // Call DBpedia function if SPARQL query is present
+      let dbpediaMessage: Message = {text: "", sender: "bot"}
 
       if (nlpData.sparql_query) {
         const dbpediaData = await callDbpediaFunction(nlpData.sparql_query);
-        const dbpediaMessage: Message = {
+        dbpediaMessage = {
           text: `DBpedia Abstract: ${dbpediaData.results.bindings[0].abstract.value}`,
           sender: 'bot',
         };
         setMessages((prevMessages) => [...prevMessages, dbpediaMessage]);
       }
+  
+      // Call vector search function
+      const vectorData = await callVectorSearchFunction(userMessage);
+      const vectorMessage: Message = {
+        text: `Vector Search Results:\n${vectorData.results.join('\n')}`,
+        sender: 'bot',
+      };
+      setMessages((prevMessages) => [...prevMessages, vectorMessage]);  
 
+      // Call LLM endpoint
+      const llmResponse = await callLlmRespond(userMessage, vectorData.results, dbpediaMessage.text)  
+      const llmMessage: Message = {
+        text: `LLM Response: ${llmResponse}`,
+        sender: 'bot',
+      };
+  
+      setMessages((prevMessages) => [...prevMessages, llmMessage]);
+  
     } catch (error) {
-      if (error instanceof Error) {
-        const errorMessage: Message = {
-          text: error.message,
-          sender: 'bot',
-        };
-        setMessages((prevMessages) => [...prevMessages, errorMessage]);
-      } else {
-        const errorMessage: Message = {
-          text: 'An unknown error occurred.',
-          sender: 'bot',
-        };
-        setMessages((prevMessages) => [...prevMessages, errorMessage]);
-      }
+      const errorMessage: Message = {
+        text: error instanceof Error ? error.message : 'An unknown error occurred.',
+        sender: 'bot',
+      };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       {/* Chat box container */}

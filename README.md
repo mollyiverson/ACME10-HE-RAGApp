@@ -75,7 +75,14 @@ Set up two terminals.
    npm start
    ```
 
-6. **Run Tests:**
+6. **Get access to LLM model**
+   ```bash
+   pip install huggingface_hub
+   huggingface-cli login
+   ```
+   **Enter your token.**
+
+7. **Run Tests:**
    ```bash
    cd ACME10-HE-RAGApp
    set PYTHONPATH=%cd%  

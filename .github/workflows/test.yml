@@ -24,6 +24,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
           python -m spacy download en_core_web_sm  # Download Spacy model
+        env:
+          CI: true  # Uses the DistilBERT LLM to save memory
+
+      # Uncomment if you need Hugging Face CLI authentication
+      # - name: Authenticate Hugging Face
+      #   env:
+      #     HF_AUTH_TOKEN: ${{ secrets.HF_AUTH_TOKEN }}
+      #   run: huggingface-cli login --token $HF_AUTH_TOKEN
 
       - name: Run tests
         env:
