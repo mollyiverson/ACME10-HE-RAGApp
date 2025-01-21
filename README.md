@@ -55,7 +55,19 @@ Set up two terminals.
    # On Linux: `source venv/Scripts/activate`
    pip install -r requirements.txt
    ```
-3. **Install Frontend Dependencies in terminal 2:**
+3. **Get access to LLM model in terminal 1**
+   ```bash
+   pip install huggingface_hub
+   huggingface-cli login
+   ```
+   **Enter your token.**
+
+4. **Run Backend in terminal 1:**
+   ```bash
+   cd ../backend
+   python -m uvicorn app.main:app --reload
+   ```
+5. **Run Frontend in terminal 2:**
 - Download [Node.js (LTS)](https://nodejs.org/en)
    ```bash
    cd ../frontend/rag-app
@@ -63,26 +75,7 @@ Set up two terminals.
    npm start
    ```
 
-4. **Run Backend in terminal 1:**
-   ```bash
-   cd ../backend
-   python -m uvicorn app.main:app --reload
-   ```
-
-5. **Run Frontend in terminal 2:**
-   ```bash
-   cd ../frontend/rag-app
-   npm start
-   ```
-
-6. **Get access to LLM model**
-   ```bash
-   pip install huggingface_hub
-   huggingface-cli login
-   ```
-   **Enter your token.**
-
-7. **Run Tests:**
+6. **Run Tests:**
    ```bash
    cd ACME10-HE-RAGApp
    set PYTHONPATH=%cd%  
@@ -90,7 +83,7 @@ Set up two terminals.
    pytest -s  # -s is optional if you want print statements to show
    ```
 
-The application should now be running on `localhost` for both frontend and backend.
+The application should now be running on `localhost:3000` for both frontend and backend.
 
 
 ## Functionality
