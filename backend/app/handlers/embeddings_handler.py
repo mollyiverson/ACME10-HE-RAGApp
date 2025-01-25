@@ -55,6 +55,46 @@ def clean_dataset(data):
     print(f"Cleaned data: {len(cleaned_data)} rows remaining.")
     return cleaned_data
 
+# Step 2A: Chunking Text
+def chunk_text(text, max_length=512, overlap=50):
+    """
+    Splits text into smaller chunks with a specified maximum length and overlap.
+
+    text (str): The input text to split.
+    max_length (int): Maximum length of each chunk (in tokens).
+    overlap (int): Number of overlapping tokens between chunks.
+    
+    Returns:
+        list: A list of text chunks.
+    """
+    words = text.split()
+    chunks = []
+    for i in range(0, len(words), max_length - overlap):
+        chunk = " ".join(words[i:i + max_length])
+        chunks.append(chunk)
+    return chunks
+
+# Step 2B: Chunk the dataset
+def chunk_dataset(data, max_length=512, overlap=50):
+    """
+    Applies chunking to all text entries in the dataset.
+    
+    data (pd.DataFrame): The input dataset with a column of text.
+    max_length (int): Maximum length of each chunk (in tokens).
+    overlap (int): Overlap between chunks.
+    
+    Returns:
+        pd.DataFrame: A DataFrame with chunked text data.
+    """
+    chunked_texts = []
+    for text in data[TEXT_COLUMN]:
+        chunks = chunk_text(text, max_length, overlap)
+        chunked_texts.extend(chunks)
+    
+    chunked_df = pd.DataFrame({TEXT_COLUMN: chunked_texts})
+    print(f"Chunked dataset into {len(chunked_df)} rows.")
+    return chunked_df
+
 # Step 3: Save the cleaned dataset
 def save_dataset(data):
     os.makedirs(EMBEDDINGS_DATA_DIR, exist_ok=True)
@@ -101,11 +141,14 @@ def main():
     # Clean dataset
     clean_data = clean_dataset(data)
 
+    # Chunk the dataset
+    chunked_data = chunk_dataset(clean_data)
+
     # Save the cleaned dataset
-    save_dataset(clean_data)
+    save_dataset(chunked_data)
 
     # Select a subset for testing
-    texts = clean_data[TEXT_COLUMN].iloc[:SUBSET_SIZE].tolist()
+    texts = chunked_data[TEXT_COLUMN].iloc[:SUBSET_SIZE].tolist()
     print(f"Loaded {len(texts)} rows of text for embedding.")
 
     # Load BERT model
