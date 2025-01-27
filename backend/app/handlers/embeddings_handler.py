@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import torch
 from transformers import BertTokenizer, BertModel
+from backend.app.data_processing.pdf_data_extractor import extract_text_from_pdfs, texts_to_dataframe, save_dataframe_to_parquet
 
 ##############################################################
 ### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
@@ -29,6 +30,7 @@ LLM_DATA_DIR = os.path.join(BASE_DATA_DIR, "llm_data")
 
 # Common file paths
 WIKI_DATA_FILE = os.path.join(BASE_DATA_DIR, "simpleWikiData.parquet")
+PDF_PARQUET_FILE = os.path.join(BASE_DATA_DIR, "pdf_data.parquet")
 CLEAN_WIKI_DATA_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "clean_wiki_data.parquet")
 EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
 FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
@@ -95,11 +97,22 @@ def save_embeddings(embeddings, output_dir):
 
 # Main Function
 def main():
-    # Load dataset
-    data = load_dataset(WIKI_DATA_FILE)
+    # Convert PDFs to Parquet format
+    pdf_dir = 'backend/app/data_processing/embeddings_data/embeddings_pdf'
+    output_parquet_path = PDF_PARQUET_FILE
+    texts = extract_text_from_pdfs(pdf_dir)
+    df = texts_to_dataframe(texts)
+    save_dataframe_to_parquet(df, output_parquet_path)
+
+    # Load datasets
+    wiki_data = load_dataset(WIKI_DATA_FILE)
+    pdf_data = load_dataset(PDF_PARQUET_FILE)
+
+    # Combine datasets
+    concat_data = pd.concat([wiki_data, pdf_data], ignore_index=True)
 
     # Clean dataset
-    clean_data = clean_dataset(data)
+    clean_data = clean_dataset(concat_data)
 
     # Save the cleaned dataset
     save_dataset(clean_data)
@@ -116,7 +129,6 @@ def main():
 
     # Save embeddings
     save_embeddings(embeddings, EMBEDDINGS_DATA_DIR)
-
 
 if __name__ == "__main__":
     main()
