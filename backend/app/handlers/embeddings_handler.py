@@ -147,8 +147,8 @@ def main():
     # Save the cleaned dataset
     save_dataset(chunked_data)
 
-    # Select a subset for testing
-    texts = chunked_data[TEXT_COLUMN].iloc[:SUBSET_SIZE].tolist()
+    # Full dataset for testing
+    texts = chunked_data[TEXT_COLUMN].iloc[:].tolist()
     print(f"Loaded {len(texts)} rows of text for embedding.")
 
     # Load BERT model
