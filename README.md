@@ -66,6 +66,13 @@ Set up two terminals.
    ```bash
    cd ../backend
    python -m uvicorn app.main:app --reload
+
+   """
+     if you get the error: `ModuleNotFoundError: No module named 'backend'`,
+     then `cd ..` into the root of the project, 
+     then `export PYTHONPATH=$(pwd)` for macOS/Linux or `set PYTHONPATH=%cd%` for Windows.
+     Then, do Step 4 again.
+   """
    ```
 5. **Run Frontend in terminal 2:**
 - Download [Node.js (LTS)](https://nodejs.org/en)
