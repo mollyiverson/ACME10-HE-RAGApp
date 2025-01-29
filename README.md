@@ -48,11 +48,11 @@ Set up two terminals.
 
 2. **Install Backend Dependencies in terminal 1:**
    ```bash
-   cd backend
    python3 -m venv venv
    source venv/bin/activate  
    # On Windows: `venv\Scripts\activate`
    # On Linux: `source venv/Scripts/activate`
+   cd backend
    pip install -r requirements.txt
    ```
 3. **Get access to LLM model in terminal 1**
