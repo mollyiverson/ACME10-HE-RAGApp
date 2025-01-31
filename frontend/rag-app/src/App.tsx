@@ -145,17 +145,23 @@ function App() {
     setUserMessage('');
   
     try {
-      // Call NLP endpoint
+      console.log('User Input: ', userMessage);
+      const startTime = performance.now();
+
+      // Natural Language Processing
+      const nlpStartTime = performance.now();
       const nlpData = await callNlpEndpoint(userMessage);
       const botMessage: Message = {
         text: `Tokens: ${nlpData.tokens.join(', ')}\nEntities: ${nlpData.entities.map((ent: Entity) => ent.text).join(', ')}\nIs Harmful: ${nlpData.is_harmful}\nSPARQL: ${nlpData.sparql_query}`,
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
+      const nlpEndTime = performance.now();
+      console.log(`NLP Time: ${nlpEndTime - nlpStartTime} ms`);
   
-      // Call DBpedia function if SPARQL query is present
+      // DBpedia Query
+      const kgStartTime = performance.now();
       let dbpediaMessage: Message = {text: "", sender: "bot"}
-
       if (nlpData.sparql_query) {
         const dbpediaData = await callDbpediaFunction(nlpData.sparql_query);
         dbpediaMessage = {
@@ -164,16 +170,22 @@ function App() {
         };
         setMessages((prevMessages) => [...prevMessages, dbpediaMessage]);
       }
+      const kgEndTime = performance.now();
+      console.log(`DBpedia Time: ${kgEndTime - kgStartTime} ms`);
   
-      // Call vector search function
+      // Vector Search
+      const vectorSearchStartTime = performance.now();
       const vectorData = await callVectorSearchFunction(userMessage);
       const vectorMessage: Message = {
         text: `Vector Search Results:\n${vectorData.results.join('\n')}`,
         sender: 'bot',
       };
-      setMessages((prevMessages) => [...prevMessages, vectorMessage]);  
+      setMessages((prevMessages) => [...prevMessages, vectorMessage]);
+      const vectorSearchEndTime = performance.now();
+      console.log(`Vector Search Time: ${vectorSearchEndTime - vectorSearchStartTime} ms`);  
 
       // Call LLM endpoint
+      const llmStartTime = performance.now();
       const llmResponse = await callLlmRespond(userMessage, vectorData.results, dbpediaMessage.text)  
       const llmMessage: Message = {
         text: `LLM Response: ${llmResponse}`,
@@ -181,6 +193,14 @@ function App() {
       };
   
       setMessages((prevMessages) => [...prevMessages, llmMessage]);
+      const llmEndTime = performance.now();
+      console.log(`LLM Response Time: ${llmEndTime - llmStartTime} ms`);
+
+      const endTime = performance.now();
+      console.log(`Total Time: ${endTime - startTime} ms`);
+      if (endTime - startTime > 600) {
+        console.log("Warning: The response time is too high. Please optimize the code.")
+      }
   
     } catch (error) {
       const errorMessage: Message = {

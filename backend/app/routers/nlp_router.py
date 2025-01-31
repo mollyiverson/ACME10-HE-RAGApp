@@ -102,17 +102,21 @@ def llm_respond(query: Query, vector_search_results = [], kg_results = ""):
         # Format query and get LLM response
         formatted_query = llm_handler.format_query(query, vector_search_results, kg_results)
         response = llm_handler.query_llm(formatted_query)
+        console.log("LLM response generated successfully.")
 
         return { "response": response }
 
     except ValueError as ve:
+        console.log('LLM Error: Value error encountered.')
         # Handle specific value-related errors
         return {"error": "Value error encountered", "details": str(ve)}, 400
 
     except AttributeError as ae:
+        console.log('LLM Error: Attribute error encountered.')
         # Handle attribute-related errors
         return {"error": "Attribute error encountered", "details": str(ae)}, 400
 
     except Exception as e:
+        console.log('LLM Error: Unexpected error encountered.')
         # Catch any other exceptions and return a generic error response
         return {"error": "An unexpected error occurred", "details": str(e)}, 500
