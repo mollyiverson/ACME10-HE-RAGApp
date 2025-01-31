@@ -26,21 +26,21 @@
 | NLP Handler         |552.30       |346.40       |552.00       |483.57        |
 | Knowledge Graph     |1137.30      |1037.40      |1231.70      |1135.17       |
 | Vector Search       |4418.30      |7159.30      |2973.20      |4850.27       |
-| LLM                 |             |             |             |              |
-| **Total**           |             |             |             |              |
+| LLM                 |Not working  |Not working  |Not working  |Not working   |
+| **Total**           |6107.9       |8543.1       |4756.9       |6469.3        |
 
-Calling to LLM not working on Molly's computer. Takes longer than 15 minutes.
+The LLaMA 2.7b model doesn't work on Molly's computer and exhausts memory and CPU. Switching to a different model is important.
 
 **Potential Bottlenecks**
+- LLaMA 2.7b has 70 billion parameters
 - Not storing chunks/documents or embeddings/indexes in a database
 - Not chunking yet
 - Local issues with LLM
-- Using LLaMA instead of ChatGBT
 - Slow local computer 
 
 ---
 
-#### Change 1: Chunking with VS
+#### Change 1: Switching to ChatGBT
 | Component          | Call 1 (ms) | Call 2 (ms) | Call 3 (ms) | Average (ms) |
 |---------------------|-------------|-------------|-------------|--------------|
 | NLP Handler         |             |             |             |              |
@@ -51,7 +51,7 @@ Calling to LLM not working on Molly's computer. Takes longer than 15 minutes.
 
 ---
 
-#### Change 2: Switching to ChatGBT
+#### Change 2: Switching to Chunking
 | Component          | Call 1 (ms) | Call 2 (ms) | Call 3 (ms) | Average (ms) |
 |---------------------|-------------|-------------|-------------|--------------|
 | NLP Handler         |             |             |             |              |
