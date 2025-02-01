@@ -70,7 +70,7 @@ Set up two terminals.
    """
      if you get the error: `ModuleNotFoundError: No module named 'backend'`,
      then `cd ..` into the root of the project, 
-     then `export PYTHONPATH=$(pwd)` for macOS/Linux or `set PYTHONPATH=%cd%` for Windows.
+     then `export PYTHONPATH=$(pwd)/backend` for macOS/Linux or `set PYTHONPATH=%cd%` for Windows.
      Then, do Step 4 again.
    """
    ```
