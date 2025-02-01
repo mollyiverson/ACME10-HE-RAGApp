@@ -76,7 +76,7 @@ Set up two terminals.
 5. **Run Frontend in terminal 2:**
 - Download [Node.js (LTS)](https://nodejs.org/en)
    ```bash
-   cd ../frontend/rag-app
+   cd frontend/rag-app
    npm install
    npm start
    ```
