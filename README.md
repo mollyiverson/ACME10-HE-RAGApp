@@ -64,7 +64,6 @@ Set up two terminals.
 
 4. **Run Backend in terminal 1:**
    ```bash
-   cd ../backend
    python -m uvicorn app.main:app --reload
 
    """
