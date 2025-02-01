@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 from openai import OpenAI
+from transformers import pipeline
 from .vector_search_handler import VectorSearchHandler
 
 ##############################################################
@@ -38,12 +39,18 @@ FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Store API Key in Environment Variable
 CHATGPT_MODEL = "gpt-4o-mini"  # Use GPT-4o-mini for efficiency
 
+# LLM Model for CI environment
+LLM_MODEL_NAME = "distilgpt2" if os.getenv("CI") else None  # DistilBERT LLM to save memory in automated testing
+
 class LLMHandler:
     def __init__(self, embedding_path=EMBEDDINGS_FILE):
         """
         Initialize the LLM handler with OpenAI ChatGPT model and vector search handler.
         """
-        self.client = OpenAI(api_key=OPENAI_API_KEY)  # Initialize OpenAI Client
+        if os.getenv("CI"):
+            self.llm = pipeline("text-generation", model=LLM_MODEL_NAME)
+        else:
+            self.client = OpenAI(api_key=OPENAI_API_KEY)  # Initialize OpenAI Client
         self.vector_search_handler = VectorSearchHandler(embedding_path=embedding_path)
 
     def get_vector_search_results(self, query_vector, top_k=5):
@@ -84,23 +91,27 @@ class LLMHandler:
         return query
 
     def query_llm(self, query, max_tokens=200, temperature=0.5):
-        """
-        Generate a response from ChatGPT using OpenAI's API.
-        """
-        try:
-            response = self.client.chat.completions.create(
-                model=CHATGPT_MODEL,
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": query}
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature
-            )
-            return response.choices[0].message.content.strip()
-        except Exception as e:
-            print(f"Error querying ChatGPT: {e}")
-            return "An error occurred while generating a response."
+        if os.getenv("CI"):
+            response = self.llm(query, max_new_tokens=max_tokens, temperature=temperature, do_sample=True)
+            full_text = response[0]["generated_text"]
+            llm_response = full_text[len(query):].strip()
+            return llm_response
+        else:
+            try:
+                response = self.client.chat.completions.create(
+                    model=CHATGPT_MODEL,
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": query}
+                    ],
+                    max_tokens=max_tokens,
+                    temperature=temperature
+                )
+                return response.choices[0].message.content.strip()
+            except Exception as e:
+                print(f"Error querying ChatGPT: {e}")
+                return "An error occurred while generating a response."
+
 
 # Example Usage
 if __name__ == "__main__":
