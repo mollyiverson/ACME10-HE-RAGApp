@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 from openai import OpenAI
+from dotenv import load_dotenv
 from transformers import pipeline
 from .vector_search_handler import VectorSearchHandler
 
@@ -36,6 +37,7 @@ EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
 FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
 
 # OpenAI Configuration
+load_dotenv()  # Loads variables from .env
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Store API Key in Environment Variable
 CHATGPT_MODEL = "gpt-4o-mini"  # Use GPT-4o-mini for efficiency
 
@@ -50,6 +52,8 @@ class LLMHandler:
         if os.getenv("CI"):
             self.llm = pipeline("text-generation", model=LLM_MODEL_NAME)
         else:
+            if not OPENAI_API_KEY:
+                raise ValueError("OPENAI_API_KEY environment variable not set")
             self.client = OpenAI(api_key=OPENAI_API_KEY)  # Initialize OpenAI Client
         self.vector_search_handler = VectorSearchHandler(embedding_path=embedding_path)
 
