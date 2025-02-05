@@ -29,7 +29,7 @@
 | LLM                 |Not working  |Not working  |Not working  |Not working   |
 | **Total**           |6107.9       |8543.1       |4756.9       |6469.3        |
 
-The LLaMA 2.7b model doesn't work on Molly's computer and exhausts memory and CPU. Switching to a different model is important.
+The LLaMA 2.7b model doesn't work on Molly's computer and exhausts memory and CPU. Switching to a different model is important. The LLaMA model takes 5-10 minutes on Chandler's computer.
 
 **Potential Bottlenecks**
 - LLaMA 2.7b has 70 billion parameters
@@ -40,18 +40,18 @@ The LLaMA 2.7b model doesn't work on Molly's computer and exhausts memory and CP
 
 ---
 
-#### Change 1: Switching to ChatGBT
+#### Change 1: Switching to ChatGBT and Chunking with Embeddings
 | Component          | Call 1 (ms) | Call 2 (ms) | Call 3 (ms) | Average (ms) |
 |---------------------|-------------|-------------|-------------|--------------|
-| NLP Handler         |             |             |             |              |
-| Knowledge Graph     |             |             |             |              |
-| Vector Search       |             |             |             |              |
-| LLM                 |             |             |             |              |
-| **Total**           |             |             |             |              |
+| NLP Handler         |341.40       |34.80        |345.30       |240.50        |
+| Knowledge Graph     |1149.70      |931.70       |2112.30      |1397.90       |
+| Vector Search       |1924.70      |1747.40      |1753.50      |1808.53       |
+| LLM                 |2405.30      |2866.90      |3245.50      |2839.23       |
+| **Total**           |5821.90      |5581.30      |7457.50      |6286.90       |
 
 ---
 
-#### Change 2: Switching to Chunking
+#### Change 2: 
 | Component          | Call 1 (ms) | Call 2 (ms) | Call 3 (ms) | Average (ms) |
 |---------------------|-------------|-------------|-------------|--------------|
 | NLP Handler         |             |             |             |              |
