@@ -40,7 +40,7 @@ The LLaMA 2.7b model doesn't work on Molly's computer and exhausts memory and CP
 
 ---
 
-#### Change 1: Switching to ChatGBT and Chunking with Embeddings
+#### Change 1: Switching to ChatGPT and Chunking with Embeddings
 | Component          | Call 1 (ms) | Call 2 (ms) | Call 3 (ms) | Average (ms) |
 |---------------------|-------------|-------------|-------------|--------------|
 | NLP Handler         |341.40       |34.80        |345.30       |240.50        |
