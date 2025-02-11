@@ -1,6 +1,6 @@
 # Sprint 4 Report (1/10/2025 - 2/10/2025)
 
-[Sprint 4 Video Link](#)
+[Sprint 4 Video Link](https://www.youtube.com/watch?v=8-Jhp4Xfhuk)
 
 ---
 
