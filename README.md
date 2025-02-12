@@ -48,11 +48,11 @@ Set up two terminals.
 
 2. **Install Backend Dependencies in terminal 1:**
    ```bash
-   cd backend
    python3 -m venv venv
    source venv/bin/activate  
    # On Windows: `venv\Scripts\activate`
    # On Linux: `source venv/Scripts/activate`
+   cd backend
    pip install -r requirements.txt
    ```
 3. **Get access to LLM model in terminal 1**
@@ -64,13 +64,19 @@ Set up two terminals.
 
 4. **Run Backend in terminal 1:**
    ```bash
-   cd ../backend
    python -m uvicorn app.main:app --reload
+
+   """
+     if you get the error: `ModuleNotFoundError: No module named 'backend'`,
+     then `cd ..` into the root of the project, 
+     then `export PYTHONPATH=$(pwd)/backend` for macOS/Linux or `set PYTHONPATH=%cd%` for Windows.
+     Then, do Step 4 again.
+   """
    ```
 5. **Run Frontend in terminal 2:**
 - Download [Node.js (LTS)](https://nodejs.org/en)
    ```bash
-   cd ../frontend/rag-app
+   cd frontend/rag-app
    npm install
    npm start
    ```

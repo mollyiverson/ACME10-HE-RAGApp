@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 import numpy as np
+from openai import OpenAI
+from dotenv import load_dotenv
 from transformers import pipeline
 from .vector_search_handler import VectorSearchHandler
 
@@ -34,36 +36,38 @@ CLEAN_WIKI_DATA_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "clean_wiki_data.parque
 EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
 FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
 
-# LLM Model
-LLM_MODEL_NAME = "meta-llama/Llama-2-7b-chat-hf" if not os.getenv("CI") else "distilgpt2" 
-# CI environment has limited resources so it uses a different LLM to save memory
+# OpenAI Configuration
+load_dotenv()  # Loads variables from .env
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Store API Key in Environment Variable
+CHATGPT_MODEL = "gpt-4o-mini"  # Use GPT-4o-mini for efficiency
+
+# LLM Model for CI environment
+LLM_MODEL_NAME = "distilgpt2" if os.getenv("CI") else None  # DistilBERT LLM to save memory in automated testing
 
 class LLMHandler:
-    def __init__(self, model_name=LLM_MODEL_NAME,
-                 embedding_path=EMBEDDINGS_FILE):
+    def __init__(self, embedding_path=EMBEDDINGS_FILE):
         """
-        Initialize the LLM handler with a specified model and vector search handler.
+        Initialize the LLM handler with OpenAI ChatGPT model and vector search handler.
         """
-        self.llm = pipeline("text-generation", model=model_name)
-        self.vector_search_handler = VectorSearchHandler(
-            embedding_path=embedding_path)
+        if os.getenv("CI"):
+            self.llm = pipeline("text-generation", model=LLM_MODEL_NAME)
+        else:
+            if not OPENAI_API_KEY:
+                raise ValueError("OPENAI_API_KEY environment variable not set")
+            self.client = OpenAI(api_key=OPENAI_API_KEY)  # Initialize OpenAI Client
+        self.vector_search_handler = VectorSearchHandler(embedding_path=embedding_path)
 
     def get_vector_search_results(self, query_vector, top_k=5):
         """
         Perform vector search and retrieve top-k vector results.
         """
-
-        similarities, indices = self.vector_search_handler.search(
-            query_vector, top_k=top_k)
-        
+        similarities, indices = self.vector_search_handler.search(query_vector, top_k=top_k)
         return {"similarities": similarities, "indices": indices}
-    
+
     def format_query(self, original_query, vector_search_text_results, kg_output):
         """
         Combine VS and KG outputs into a single natural-language query.
         """
-        # Join the array of vector search results with newlines
-        # Handle empty or missing results gracefully
         formatted_vs_results = (
             "\n".join([f"- {result}" for result in vector_search_text_results])
             if vector_search_text_results else "No relevant vector search results were found."
@@ -89,26 +93,28 @@ class LLMHandler:
             - Provide only relevant information that answers the query directly.
         """
         return query
-    
-    def query_llm(self, query, max_new_tokens=200, temperature=0.5):
-        """
-        Generate a response from the LLM, excluding the prompt tokens.
-        """
-        # Generate the response with the pipeline
-        response = self.llm(query,
-                            max_new_tokens=max_new_tokens,
-                            temperature=temperature,
-                            do_sample=True)
 
-        # Extract generated text and remove the prompt part
-        full_text = response[0]["generated_text"]
-
-        # Use tokenized length to slice off the prompt from the full text
-        llm_response = full_text[len(query):].strip()  # Remove the exact query text
-
-        print(llm_response)
-
-        return llm_response
+    def query_llm(self, query, max_tokens=200, temperature=0.5):
+        if os.getenv("CI"):
+            response = self.llm(query, max_new_tokens=max_tokens, temperature=temperature, do_sample=True)
+            full_text = response[0]["generated_text"]
+            llm_response = full_text[len(query):].strip()
+            return llm_response
+        else:
+            try:
+                response = self.client.chat.completions.create(
+                    model=CHATGPT_MODEL,
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant."},
+                        {"role": "user", "content": query}
+                    ],
+                    max_tokens=max_tokens,
+                    temperature=temperature
+                )
+                return response.choices[0].message.content.strip()
+            except Exception as e:
+                print(f"Error querying ChatGPT: {e}")
+                return "An error occurred while generating a response."
 
 
 # Example Usage
@@ -122,7 +128,6 @@ if __name__ == "__main__":
     # Build a vector index and load
     llm_handler.vector_search_handler.build_index(embeddings)
 
-    #example_query_vector = np.expand_dims(embeddings[0], axis=0)    
     example_query_text = "Who is Alan Turing?"
     example_query_vector = llm_handler.vector_search_handler.embed_query(example_query_text)
 
@@ -134,7 +139,7 @@ if __name__ == "__main__":
     vector_search_texts = llm_handler.vector_search_handler.get_search_results(indices)
     
     # Mock knowledge graph output
-    kg_output = "Alan Turing developed the idea of the turing machine."
+    kg_output = "Alan Turing developed the idea of the Turing machine."
 
     # Format query and get LLM response
     query = llm_handler.format_query(example_query_text, vector_search_texts, kg_output)
