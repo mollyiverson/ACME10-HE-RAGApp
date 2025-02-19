@@ -23,8 +23,8 @@ def save_dataframe_to_parquet(df, output_path):
 
 # Example usage
 if __name__ == "__main__":
-    dir = 'path/to/pdf/directory'
-    output_path = 'path/to/output.parquet'
+    dir = 'backend/app/data_processing/embeddings_data/embeddings_pdf'
+    output_path = 'backend/app/data_processing/pdf_data.parquet'
 
     texts = extract_text_from_pdfs(dir)
     df = texts_to_dataframe(texts)
