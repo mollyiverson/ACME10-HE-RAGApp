@@ -1,0 +1,19 @@
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY frontend/rag-app/package.json frontend/rag-app/package-lock.json ./
+RUN npm install
+
+COPY frontend/rag-app/ ./
+
+RUN npm run build
+
+# Use a lightweight web server to serve the frontend
+FROM nginx:alpine 
+
+COPY --from=builder /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
