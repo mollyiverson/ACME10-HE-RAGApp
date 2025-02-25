@@ -2,10 +2,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY frontend/rag-app/package.json frontend/rag-app/package-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm install
 
-COPY frontend/rag-app/ ./
+COPY . ./
 
 RUN npm run build
 
