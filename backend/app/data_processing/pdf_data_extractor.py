@@ -1,4 +1,4 @@
-import fitz  # PyMuPDF for reading text from PDF file
+import pymupdf
 import os
 import pandas as pd
 
@@ -7,7 +7,7 @@ def extract_text_from_pdfs(dir):
     for file in os.listdir(dir):
         if file.endswith('.pdf'):
             path = os.path.join(dir, file)
-            doc = fitz.open(path)
+            doc = pymupdf.open(path)
             text = ""
             for page in doc:
                 text += page.get_text()
