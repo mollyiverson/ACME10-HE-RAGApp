@@ -164,8 +164,13 @@ function App() {
       let dbpediaMessage: Message = {text: "", sender: "bot"}
       if (nlpData.sparql_query) {
         const dbpediaData = await callDbpediaFunction(nlpData.sparql_query);
+        
+        // Ensure dbpeida data has valid structure and text
+        const firstBinding = dbpediaData?.results?.bindings?.[0];
+        const abstractText = firstBinding?.abstract?.value || "No abstract available.";      
+
         dbpediaMessage = {
-          text: `DBpedia Abstract: ${dbpediaData.results.bindings[0].abstract.value}`,
+          text: `DBpedia Abstract: ${abstractText}`,
           sender: 'bot',
         };
         setMessages((prevMessages) => [...prevMessages, dbpediaMessage]);
