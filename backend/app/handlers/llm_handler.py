@@ -57,7 +57,7 @@ class LLMHandler:
             self.client = OpenAI(api_key=OPENAI_API_KEY)  # Initialize OpenAI Client
         self.vector_search_handler = VectorSearchHandler(embedding_path=embedding_path)
 
-    def get_vector_search_results(self, query_vector, top_k=5):
+    def get_vector_search_results(self, query_vector, top_k=10):
         """
         Perform vector search and retrieve top-k vector results.
         """

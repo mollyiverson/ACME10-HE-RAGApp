@@ -87,7 +87,7 @@ class VectorSearchHandler:
             query_embedding = (sum_embeddings / sum_mask).cpu().numpy()
         return query_embedding
 
-    def search(self, query_vector, top_k=5):
+    def search(self, query_vector, top_k=10, similarity_threshold=0.5):
         """Search the FAISS index with normalized query vector."""
         if self.index is None:
             raise ValueError("Index is not loaded. Build or load an index first.")
@@ -95,8 +95,20 @@ class VectorSearchHandler:
         query_vector_normalized = query_vector / np.linalg.norm(query_vector, axis=1)[:, np.newaxis]
 
         similarities, indices = self.index.search(query_vector_normalized, top_k)
-        
-        return similarities[0], indices[0]
+
+        # Filter results below the threshold
+        filtered_results = [
+            (similarity, index)
+            for similarity, index in zip(similarities[0], indices[0])
+            if similarity >= similarity_threshold
+        ]
+
+        if not filtered_results:
+            return [], []  # No results above threshold
+
+        filtered_similarities, filtered_indices = zip(*filtered_results)
+    
+        return list(filtered_similarities), list(filtered_indices)
 
     def get_search_results(self, indices, dataset_path=CLEAN_WIKI_DATA_FILE):
         """Get the corresponding texts of the top results."""
