@@ -77,8 +77,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          query_text: query,  
-          top_k: 5
+          query_text: query
         }),
       });
   
