@@ -155,13 +155,13 @@ def main():
     clean_data = clean_dataset(concat_data)
 
     # Chunk the dataset
-    chunked_data = chunk_dataset(clean_data)
+    # chunked_data = chunk_dataset(clean_data)
 
     # Save the cleaned dataset
-    save_dataset(chunked_data)
+    save_dataset(clean_data)
 
     # Full dataset for testing
-    texts = chunked_data[TEXT_COLUMN].iloc[:].tolist()
+    texts = clean_data[TEXT_COLUMN].iloc[:].tolist()
     print(f"Loaded {len(texts)} rows of text for embedding.")
 
     # Load BERT model
