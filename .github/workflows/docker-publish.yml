@@ -1,0 +1,44 @@
+name: Publish Docker Images to GHCR
+
+on:
+    workflow_run:
+        workflows: ['test']
+        types:
+            - completed
+
+jobs:
+  push_to_registry:
+    runs-on: ubuntu-latest
+    if: > 
+        github.event.workflow_run.event == 'push' 
+        && github.ref == 'refs/heads/main'
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Set up Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}/rag-backend
+
+      - name: Build and push Backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: ghcr.io/${{ github.repository }}/rag-backend:latest
+
+      - name: Build and push Frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: ghcr.io/${{ github.repository }}/rag-frontend:latest
