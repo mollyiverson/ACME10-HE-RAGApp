@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import torch
 from transformers import BertTokenizer, BertModel
-from backend.app.data_processing.pdf_data_extractor import extract_text_from_pdfs, texts_to_dataframe, save_dataframe_to_parquet
+import pymupdf
 
 ##############################################################
 ### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
@@ -38,6 +38,25 @@ FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
 TEXT_COLUMN = "text"  # Replace with the name of the column containing text
 BATCH_SIZE = 16  # Adjust based on your GPU/CPU memory
 SUBSET_SIZE = 100  # Number of rows to use for embeddings
+
+def extract_text_from_pdfs(dir):
+    texts = []
+    for file in os.listdir(dir):
+        if file.endswith('.pdf'):
+            path = os.path.join(dir, file)
+            doc = pymupdf.open(path)
+            text = ""
+            for page in doc:
+                text += page.get_text()
+            texts.append(text)
+    return texts
+
+def texts_to_dataframe(texts):
+    df = pd.DataFrame(texts, columns=['text'])
+    return df
+
+def save_dataframe_to_parquet(df, output_path):
+    df.to_parquet(output_path)
 
 # Step 1: Load Dataset
 def load_dataset(dataset_path):
@@ -138,7 +157,7 @@ def save_embeddings(embeddings, output_dir):
 # Main Function
 def main():
     # Convert PDFs to Parquet format
-    pdf_dir = 'backend/app/data_processing/embeddings_data/embeddings_pdf'
+    pdf_dir = '../data_processing/embeddings_data/embeddings_pdf'
     output_parquet_path = PDF_PARQUET_FILE
     texts = extract_text_from_pdfs(pdf_dir)
     df = texts_to_dataframe(texts)
@@ -155,13 +174,13 @@ def main():
     clean_data = clean_dataset(concat_data)
 
     # Chunk the dataset
-    chunked_data = chunk_dataset(clean_data)
+    # chunked_data = chunk_dataset(clean_data)
 
     # Save the cleaned dataset
-    save_dataset(chunked_data)
+    save_dataset(clean_data)
 
     # Full dataset for testing
-    texts = chunked_data[TEXT_COLUMN].iloc[:].tolist()
+    texts = clean_data[TEXT_COLUMN].iloc[:].tolist()
     print(f"Loaded {len(texts)} rows of text for embedding.")
 
     # Load BERT model
