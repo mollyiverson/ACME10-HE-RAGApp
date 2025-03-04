@@ -157,7 +157,7 @@ def save_embeddings(embeddings, output_dir):
 # Main Function
 def main():
     # Convert PDFs to Parquet format
-    pdf_dir = 'backend/app/data_processing/embeddings_data/embeddings_pdf'
+    pdf_dir = '../data_processing/embeddings_data/embeddings_pdf'
     output_parquet_path = PDF_PARQUET_FILE
     texts = extract_text_from_pdfs(pdf_dir)
     df = texts_to_dataframe(texts)
