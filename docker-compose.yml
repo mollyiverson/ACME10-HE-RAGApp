@@ -6,6 +6,7 @@ services:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
+  #   - OPENAI_API_KEY=      # Can add OPENAI_API_KEY here optionally
 
   frontend:
     image: ghcr.io/mollyiverson/acme10-he-ragapp-frontend:latest
