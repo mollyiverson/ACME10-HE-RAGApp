@@ -2,15 +2,20 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
+LABEL org.opencontainers.image.source="https://github.com/mollyiverson/ACME10-HE-RAGApp"
+
+# Needed to downloaded from Google Drive
+# RUN apt-get update && apt-get install -y wget
+
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Download large files from Google Drive
-RUN wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1yBHpx2klG9iRNOmwLcGQjhrwfvE5dNd4" -O /app/data_processing/embeddings_data/text_embeddings.npy && \
-    wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1MP7DsnWATIWCR7xBNaVLzSuVnSEX6XFL" -O /app/data_processing/vector_search_data/index.faiss
+# Download large files from Google Drive. Comment out if you're building locally and have text_embeddings.npy and index.faiss
+# RUN wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1yBHpx2klG9iRNOmwLcGQjhrwfvE5dNd4" -O /app/data_processing/embeddings_data/text_embeddings.npy && \
+#     wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1MP7DsnWATIWCR7xBNaVLzSuVnSEX6XFL" -O /app/data_processing/vector_search_data/index.faiss
 
 ENV PYTHONPATH=/app
 
