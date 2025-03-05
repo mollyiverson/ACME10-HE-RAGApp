@@ -32,13 +32,13 @@ jobs:
       - name: Build and push Backend
         uses: docker/build-push-action@v4
         with:
-          context: ./backend
+          context: ./
           push: true
           tags: ghcr.io/${{ github.repository }}/rag-backend:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
+          context: ./frontend/rag-app
           push: true
           tags: ghcr.io/${{ github.repository }}/rag-frontend:latest
