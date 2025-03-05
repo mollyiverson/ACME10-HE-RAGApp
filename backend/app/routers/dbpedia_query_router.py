@@ -2,7 +2,7 @@ import logging
 import urllib.parse
 from fastapi import APIRouter
 from SPARQLWrapper import SPARQLWrapper, JSON
-from app.models.basic_query import Query
+from backend.app.models.basic_query import Query
 
 router = APIRouter()
 
