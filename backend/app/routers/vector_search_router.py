@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from backend.app.handlers.vector_search_handler import VectorSearchHandler
-from backend.app.models.vector_search_query import VectorSearchQuery
+from app.handlers.vector_search_handler import VectorSearchHandler
+from app.models.vector_search_query import VectorSearchQuery
 
 router = APIRouter()
 

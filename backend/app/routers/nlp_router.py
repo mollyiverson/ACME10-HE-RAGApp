@@ -1,7 +1,7 @@
 import spacy
 from fastapi import APIRouter
-from backend.app.models.basic_query import Query
-from backend.app.handlers.llm_handler import LLMHandler
+from app.models.basic_query import Query
+from app.handlers.llm_handler import LLMHandler
 
 router = APIRouter()
 nlp = spacy.load("en_core_web_sm")

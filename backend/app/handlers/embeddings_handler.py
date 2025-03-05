@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import torch
 from transformers import BertTokenizer, BertModel
-from backend.app.data_processing.pdf_data_extractor import extract_text_from_pdfs, texts_to_dataframe, save_dataframe_to_parquet
+from app.data_processing.pdf_data_extractor import extract_text_from_pdfs, texts_to_dataframe, save_dataframe_to_parquet
 
 ##############################################################
 ### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
