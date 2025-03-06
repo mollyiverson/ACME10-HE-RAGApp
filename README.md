@@ -110,10 +110,13 @@ export OPEN_API_KEY=value
    git clone https://github.com/mollyiverson/ACME10-HE-RAGApp.git
    cd ACME10-HE-RAGApp
    ```
+2. **Download Embeddings:** Download the required embedding files from [Google Drive](https://drive.google.com/drive/folders/1_WwirXnxWoHHrr58b_Id6c0k-s_v711N)
+    - Place `text_embeddings.npy` in `backend/app/data_processing/embeddings_data/`
+    - Place `index.faiss` in `backend/app/data_processing/vector_search_data/`
 
 Set up two terminals.
 
-2. **Install Backend Dependencies in terminal 1:**
+3. **Install Backend Dependencies in terminal 1:**
 
    ```bash
    python3 -m venv venv
@@ -124,7 +127,7 @@ Set up two terminals.
    pip install -r requirements.txt
    ```
 
-3. **Run Backend in terminal 1:**
+4. **Run Backend in terminal 1:**
 
    ```bash
    python -m uvicorn app.main:app --reload
@@ -137,9 +140,9 @@ Set up two terminals.
    """
    ```
 
-4. **Run Frontend in terminal 2:**
+5. **Run Frontend in terminal 2:**
 
-- Download [Node.js (LTS)](https://nodejs.org/en)
+    - Download [Node.js (LTS)](https://nodejs.org/en)
   ```bash
   cd frontend/rag-app
   npm install
@@ -148,7 +151,7 @@ Set up two terminals.
 
 The application should now be running on `localhost:3000` for both frontend and backend.
 
-5. **Run Tests:**
+6. **Run Tests:**
    ```bash
    cd ACME10-HE-RAGApp
    set PYTHONPATH=%cd%
