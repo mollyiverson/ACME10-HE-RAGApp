@@ -1,4 +1,4 @@
-name: Publish Docker Images to GHCR
+name: Publish Docker Images to GHCR (${ github.sha::7 })
 
 on:
   workflow_run:
