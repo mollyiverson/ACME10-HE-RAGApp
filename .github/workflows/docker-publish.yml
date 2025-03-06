@@ -32,7 +32,7 @@ jobs:
         with:
           context: ./
           push: true
-          tags: ghcr.io/${{ env.REPO_LC }}/rag-backend:latest
+          tags: ghcr.io/${{ env.REPO_LC }}-backend:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v4
@@ -41,4 +41,4 @@ jobs:
         with:
           context: ./frontend/rag-app
           push: true
-          tags: ghcr.io/${{ env.REPO_LC }}/rag-frontend:latest
+          tags: ghcr.io/${{ env.REPO_LC }}-frontend:latest
