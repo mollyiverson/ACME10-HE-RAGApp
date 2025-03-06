@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from transformers import BertTokenizer, BertModel
-import torch
+from sentence_transformers import SentenceTransformer
 import faiss
 import os
 ##############################
@@ -40,12 +40,8 @@ class VectorSearchHandler:
         self.index_path = index_path
         self.index = None
 
-        # Initialize BERT tokenizer and model
-        self.tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-        self.model = BertModel.from_pretrained("bert-base-uncased")
-        self.model.eval()
-        if torch.cuda.is_available():
-            self.model = self.model.cuda()
+        # Initialize model
+        self.model = SentenceTransformer('all-MiniLM-L6-v2')
 
     def load_embeddings(self):
         """Load embeddings from the specified path."""
@@ -71,28 +67,18 @@ class VectorSearchHandler:
         self.index = faiss.read_index(self.index_path)
 
     def embed_query(self, query):
-        """Generate an embedding for the query using BERT."""
-        inputs = self.tokenizer(query, return_tensors="pt", padding=True, truncation=True, max_length=512)
-        if torch.cuda.is_available():
-            inputs = {key: val.cuda() for key, val in inputs.items()}
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            token_embeddings = outputs.last_hidden_state
-            attention_mask = inputs['attention_mask']
-
-            input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-            sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
-            sum_mask = input_mask_expanded.sum(1)
-            sum_mask = torch.clamp(sum_mask, min=1e-9)
-            query_embedding = (sum_embeddings / sum_mask).cpu().numpy()
+        """Generate an embedding for the query."""
+        query_embedding = self.model.encode(query, convert_to_numpy=True)
+        
         return query_embedding
 
-    def search(self, query_vector, top_k=10, similarity_threshold=0.5):
+    def search(self, query_vector, top_k=10, similarity_threshold=0.3):
         """Search the FAISS index with normalized query vector."""
         if self.index is None:
             raise ValueError("Index is not loaded. Build or load an index first.")
-        
-        query_vector_normalized = query_vector / np.linalg.norm(query_vector, axis=1)[:, np.newaxis]
+
+        query_vector_normalized = query_vector / np.linalg.norm(query_vector)
+        query_vector_normalized = query_vector_normalized.reshape(1, -1)  # Reshape to 2D (1, d)
 
         similarities, indices = self.index.search(query_vector_normalized, top_k)
 
@@ -122,7 +108,7 @@ if __name__ == "__main__":
     embeddings = handler.load_embeddings()
     handler.build_index(embeddings)
 
-    example_query_text = "Who is Alan Turing?"
+    example_query_text = "How many people in Guatemala are Native American?"
     example_query_vector = handler.embed_query(example_query_text)
     similarities, indices = handler.search(example_query_vector)
 
