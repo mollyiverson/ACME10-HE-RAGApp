@@ -40,7 +40,7 @@ FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
 
 TEXT_COLUMN = "text"  # Replace with the name of the column containing text
 BATCH_SIZE = 32  # Adjust based on your GPU/CPU memory
-SUBSET_SIZE = 500  # Number of rows to use for embeddings
+SUBSET_SIZE = 1000  # Number of rows to use for embeddings
 
 nltk.download("punkt")  # Download the tokenizer models for chunking
 
@@ -195,7 +195,7 @@ def main():
     save_dataset(clean_data)
 
     # Generate embeddings
-    texts = clean_data[TEXT_COLUMN].iloc[:SUBSET_SIZE].tolist()
+    texts = clean_data[TEXT_COLUMN].iloc[:].tolist()
     print(f"Loaded {len(texts)} rows of text for embedding.")
     
     txt_file_path = "texts_for_embedding.txt"

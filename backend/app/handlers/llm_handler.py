@@ -4,7 +4,7 @@ import numpy as np
 from openai import OpenAI
 from dotenv import load_dotenv
 from transformers import pipeline
-from .vector_search_handler import VectorSearchHandler
+from backend.app.handlers.vector_search_handler import VectorSearchHandler
 
 ##############################################################
 ### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
@@ -91,6 +91,7 @@ class LLMHandler:
             - Use the information from the vector search results and the knowledge graph context, if they exist, to provide a concise and accurate response to the query.
             - Avoid repeating the input query in your response.
             - Provide only relevant information that answers the query directly.
+            - If you couldn't find relevant information from the vector search results or the knowledge graph, try to answer on your own and state how you didn't have additional context.
         """
         return query
 

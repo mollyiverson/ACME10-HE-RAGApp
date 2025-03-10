@@ -113,4 +113,5 @@ if __name__ == "__main__":
     similarities, indices = handler.search(example_query_vector)
 
     vector_search_texts = handler.get_search_results(indices)
-    print("Search Results:\n", vector_search_texts)
+    for result_num, result in enumerate(vector_search_texts):
+        print(f"Result {result_num + 1}: {result}\n\n")
