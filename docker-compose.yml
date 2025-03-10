@@ -1,0 +1,16 @@
+
+services:
+  backend:
+    image: ghcr.io/mollyiverson/acme10-he-ragapp-backend:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+  #   - OPENAI_API_KEY=      # Can add OPENAI_API_KEY here optionally
+
+  frontend:
+    image: ghcr.io/mollyiverson/acme10-he-ragapp-frontend:latest
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

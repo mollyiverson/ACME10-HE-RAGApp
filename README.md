@@ -4,37 +4,104 @@
 
 ### One-sentence description of the project
 
-We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEarth](https://www.hackerearth.com/) that will utilize vector search, knowledge graphs, and a LLM to answer questions and generate content from a knowledge base of more than 10,000 Wikipedia articles.
+We developed a RAG (Retrieval-Augmented Generation) application for [HackerEarth](https://www.hackerearth.com/) that utilizes vector search, knowledge graphs, and an LLM to answer questions and generate content from a knowledge base of more than 10,000 Wikipedia articles.
 
 ### Additional information about the project
 
 - **Client:**
-  - [HackerEarth](https://www.hackerearth.com/), based in San Francisco, offers enterprise software for technical hiring. Organizations use their platform to create coding assessments, conduct remote video interviews, and ensure unbiased, AI-powered evaluation of candidates.
+  - [HackerEarth](https://www.hackerearth.com/), based in San Francisco, offers enterprise software for technical hiring. Organizations use their platform to create coding assessments, conduct remote video interviews, and ensure unbiased, AI-powered evaluation of candidates
 - **RAG application:**
-  - Retrieval Augmented Generation (RAG) means supplying a Large Language Model (LLM) with the appropriate processed data from an outside knowledge base. We will use Knowledge Graphs and vector search to optimize data retrieval. 
-- **Potential Knowledge Graph tools:**
-  - DBpedia, YAGO, or other knowledge graphs (KG) of your choice, and use SPARQL to query the KG.
-- **Potential vector search tools:**
-  - FAISS, Annoy, Pinecone, or other vector search libraries.
-- **Potential LLMs:**
-  - OpenAI, or free models such as Microsoft Phi, Smaller version of LLaMA, etc.
+  - Retrieval Augmented Generation (RAG) means supplying a Large Language Model (LLM) with the appropriate processed data from an outside knowledge base. We will use Knowledge Graphs and vector search to optimize data retrieval
+- **Knowledge Graph used:**
+  - DBpedia
+- **Vector Search tool used:**
+  - FAISS
+- **LLM used:**
+  - OpenAI
 
-## Installation
+## Running the Application with Docker
+
+If you prefer to use the pre-built Docker images instead of setting up the project manually, follow these steps.
 
 ### Prerequisites
 
-- **Git:** Ensure that you have Git installed to clone the repository. You can install Git from [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-- **Python 3.9+:** Required to run the backend services of the RAG application.
-- **Node.js:** For running the frontend, you need to have Node.js installed. Get it from [here](https://nodejs.org/en/).
-- **SPARQL endpoint:** Install or access an instance for querying knowledge graphs.
-- **Vector Search Libraries:** Install FAISS or another vector search library (for example, `pip install faiss`).
-- **LLM API Key:** If you are using an external LLM (e.g., OpenAI), ensure you have the API key set up in your environment.
+- **Install Docker Desktop:** Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+- **Install Docker Compose:** Ensure you have `docker-compose` installed. You can install it via Python:
 
-### Add-ons
+  ```bash
+  pip install docker-compose
+  ```
 
-- **React (Frontend):** Our app uses React for the frontend, which interacts with the RAG backend.
-- **FastAPI (Backend):** We use FastAPI to handle RESTful API calls for processing user queries.
-- **FAISS (Vector Search):** FAISS is used for searching through the vector embeddings generated from Wikipedia articles.
+- **LLM API Key:** Ensure you have an OpenAI key saved in your environment
+
+```bash
+# For Linux
+export OPEN_API_KEY=value
+```
+
+### Running the Application
+
+1. **Pull the Frontend Image:**
+
+   ```bash
+   docker pull ghcr.io/mollyiverson/acme10-he-ragapp-frontend:latest
+   ```
+
+2. **Pull the Backend Image:**
+
+   ```bash
+   docker pull ghcr.io/mollyiverson/acme10-he-ragapp-backend:latest
+   ```
+
+3. **Download the `docker-compose.yml` File:**
+
+   ```bash
+   curl -O https://raw.githubusercontent.com/mollyiverson/ACME10-HE-RAGApp/main/docker-compose.yml
+   ```
+
+   Or, download it manually from the repository. Keep it in the same location you used to pull the docker images.
+
+4. **Start the Containers:**
+
+   ```bash
+   docker-compose up
+   ```
+
+5. **Access the Application:**
+   - Open your browser and go to `http://localhost:3000`.
+
+### Stopping and Cleaning Up
+
+- **Shut down the application:**
+
+  ```bash
+  docker-compose down
+  ```
+
+- **Remove Docker Images (if needed):**
+  The images take up more than 10 GB, so you may want to remove them after use.
+  ```bash
+  docker rmi ghcr.io/mollyiverson/acme10-he-ragapp-frontend:latest
+  docker rmi ghcr.io/mollyiverson/acme10-he-ragapp-backend:latest
+  ```
+
+---
+
+## Installation (For Local Development)
+
+If you prefer to run the application locally by cloning the repository, follow the steps below.
+
+### Prerequisites
+
+- **Git:** Ensure that you have Git installed to clone the repository. You can install Git from [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- **Python 3.9+:** Required to run the backend services of the RAG application
+- **Node.js:** For running the frontend, you need to have Node.js installed. Get it from [here](https://nodejs.org/en/)
+- **LLM API Key:** Ensure you have an OpenAI key saved in your environment
+
+```bash
+# For Linux
+export OPEN_API_KEY=value
+```
 
 ### Installation Steps
 
@@ -43,89 +110,79 @@ We will develop a RAG (Retrieval-Augmented Generation) application for [HackerEa
    git clone https://github.com/mollyiverson/ACME10-HE-RAGApp.git
    cd ACME10-HE-RAGApp
    ```
+2. **Download Embeddings:** Download the required embedding files from [Google Drive](https://drive.google.com/drive/folders/1_WwirXnxWoHHrr58b_Id6c0k-s_v711N)
+    - Place `text_embeddings.npy` in `backend/app/data_processing/embeddings_data/`
+    - Place `index.faiss` in `backend/app/data_processing/vector_search_data/`
 
 Set up two terminals.
 
-2. **Install Backend Dependencies in terminal 1:**
+3. **Install Backend Dependencies in terminal 1:**
+
    ```bash
    python3 -m venv venv
-   source venv/bin/activate  
+   source venv/bin/activate
    # On Windows: `venv\Scripts\activate`
    # On Linux: `source venv/Scripts/activate`
    cd backend
    pip install -r requirements.txt
    ```
-3. **Get access to LLM model in terminal 1**
-   ```bash
-   pip install huggingface_hub
-   huggingface-cli login
-   ```
-   **Enter your token.**
 
 4. **Run Backend in terminal 1:**
+
    ```bash
    python -m uvicorn app.main:app --reload
 
    """
      if you get the error: `ModuleNotFoundError: No module named 'backend'`,
-     then `cd ..` into the root of the project, 
+     then `cd ..` into the root of the project,
      then `export PYTHONPATH=$(pwd)/backend` for macOS/Linux or `set PYTHONPATH=%cd%` for Windows.
      Then, do Step 4 again.
    """
    ```
+
 5. **Run Frontend in terminal 2:**
-- Download [Node.js (LTS)](https://nodejs.org/en)
-   ```bash
-   cd frontend/rag-app
-   npm install
-   npm start
-   ```
+
+    - Download [Node.js (LTS)](https://nodejs.org/en)
+  ```bash
+  cd frontend/rag-app
+  npm install
+  npm start
+  ```
+
+The application should now be running on `localhost:3000` for both frontend and backend.
 
 6. **Run Tests:**
    ```bash
    cd ACME10-HE-RAGApp
-   set PYTHONPATH=%cd%  
+   set PYTHONPATH=%cd%
    # On macOS/Linux: `export PYTHONPATH=$(pwd)`
    pytest -s  # -s is optional if you want print statements to show
    ```
 
-The application should now be running on `localhost:3000` for both frontend and backend.
-
-
 ## Functionality
 
-The RAG application allows users to enter queries and receive accurate, context-rich responses from a combination of vector search and knowledge graphs.
+The RAG application allows users to enter queries and receive accurate, context-rich responses from a combination of vector search and knowledge graphs. It uses both the large Wikipedia dataset and a custom dataset of class notes to highlight the immense potential of the RAG model.
 
 ### Walkthrough
 
-1. Open the application in your browser.
-2. Input a question or query related to the Wikipedia dataset.
-3. The application retrieves relevant information using vector embeddings.
-4. The knowledge graph adds contextual insights to the response.
-5. The LLM generates a coherent answer based on the retrieved data.
+1. Open the application in your browser
+2. Input a question or query related to the Wikipedia dataset
+3. The application retrieves relevant information using vector embeddings
+4. The knowledge graph adds contextual insights to the response
+5. The LLM generates a coherent answer based on the retrieved data
 
-The chat interface supports query submission, response retrieval, and historical session saving for reference.
+## Known Limitations
 
-## Known Problems
-
-- **Performance Degradation with Large Datasets:** With over 10,000 articles, there may be a slowdown during query processing. We are currently optimizing the indexing and retrieval process.
-- **Error Handling with Knowledge Graph Queries:** If a SPARQL query to the knowledge graph fails, the system may return incomplete information.
-- **Missing Responses:** In rare cases, the system might generate an "I don't know" response when the knowledge base doesn't have enough data to provide an accurate answer.
-
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+- **Vector Search Inaccuracies:** With over 10,000 articles, vector search has difficulty finding the most relevant information.
+- **Error Handling with Knowledge Graph Queries:** If a SPARQL query to the knowledge graph fails, the system may return incomplete information
+- **Missing Responses:** In rare cases, the system might generate an "I don't know" response when the knowledge base doesn't have enough data to provide an accurate answer
 
 ## Additional Documentation
 
-* [Project Abstract](docs/project-report/Project-Abstract.pdf)
-* [Sprint reports](docs/sprint-reports/)
-* User links
+- [Project Report](docs/project-report/RAGApp-FinalReport.pdf)
+- [Project Abstract](docs/project-report/Project-Abstract.pdf)
+- [Sprint reports](docs/sprint-reports/)
 
 ## License
 
-See `LICENSE.txt` 
+See `LICENSE.txt`

@@ -31,3 +31,7 @@ yarn-error.log*
 
 # index
 index.faiss
+
+# embeddings
+text_embeddings.npy
+*.npy
