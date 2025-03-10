@@ -72,7 +72,7 @@ class VectorSearchHandler:
         
         return query_embedding
 
-    def search(self, query_vector, top_k=10, similarity_threshold=0.3):
+    def search(self, query_vector, top_k=10, similarity_threshold=0.5):
         """Search the FAISS index with normalized query vector."""
         if self.index is None:
             raise ValueError("Index is not loaded. Build or load an index first.")
