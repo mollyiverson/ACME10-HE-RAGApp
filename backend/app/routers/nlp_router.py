@@ -66,7 +66,6 @@ def generate_sparql_query(entities):
 
 @router.post("/process_query")
 def process_query(query: Query):
-    ### TODO: Add option to adjust number of top-k vector search results to retreive. ###
     '''
     Processes a user query by performing various NLP tasks including tokenization, entity extraction, 
     harmful intent detection, and optionally generating a SPARQL query if entities are found.

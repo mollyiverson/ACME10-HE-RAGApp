@@ -27,7 +27,14 @@ def vector_search(search_query: VectorSearchQuery):
         query_vector = vector_handler.embed_query(search_query.query_text)
         
         # Perform the search
-        similarities, indices = vector_handler.search(query_vector, top_k=search_query.top_k)
+        similarities, indices = vector_handler.search(query_vector, top_k=10, similarity_threshold=0.5)
+
+        # If no results found, return a message
+        if not indices:
+            return {
+                "query": search_query.query_text,
+                "results": []
+            }
 
         # Retrieve search results
         search_results = vector_handler.get_search_results(indices)
@@ -35,9 +42,8 @@ def vector_search(search_query: VectorSearchQuery):
         # Return the results in a structured format
         return {
             "query": search_query.query_text,
-            "top_k": search_query.top_k,
             "results": [
-                {"text": text, "similarity": float(similarity)}  # Explicitly convert to Python float
+                {"text": text, "similarity": float(similarity)}
                 for text, similarity in zip(search_results, similarities)
             ],
         }

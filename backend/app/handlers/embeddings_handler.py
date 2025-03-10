@@ -1,9 +1,12 @@
 import os
 import pandas as pd
 import numpy as np
-import torch
 from transformers import BertTokenizer, BertModel
+from sentence_transformers import SentenceTransformer
 import pymupdf
+import re
+import nltk
+from nltk.tokenize import sent_tokenize
 
 ##############################################################
 ### TODO: USE IMPORTS WHEN CONFIG FILE IS CORRECTLY SET UP ###
@@ -36,8 +39,10 @@ EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DATA_DIR, "text_embeddings.npy")
 FAISS_INDEX_FILE = os.path.join(VECTOR_SEARCH_DATA_DIR, "index.faiss")
 
 TEXT_COLUMN = "text"  # Replace with the name of the column containing text
-BATCH_SIZE = 16  # Adjust based on your GPU/CPU memory
-SUBSET_SIZE = 100  # Number of rows to use for embeddings
+BATCH_SIZE = 32  # Adjust based on your GPU/CPU memory
+SUBSET_SIZE = 1000  # Number of rows to use for embeddings
+
+nltk.download("punkt")  # Download the tokenizer models for chunking
 
 def extract_text_from_pdfs(dir):
     texts = []
@@ -88,30 +93,49 @@ def chunk_text(text, max_length=512, overlap=50):
     Returns:
         list: A list of text chunks.
     """
-    words = text.split()
+    sentences = sent_tokenize(text)
     chunks = []
-    for i in range(0, len(words), max_length - overlap):
-        chunk = " ".join(words[i:i + max_length])
-        chunks.append(chunk)
+    current_chunk = []
+    current_length = 0
+    
+    for sentence in sentences:
+        sentence_length = len(sentence.split())  # approx length in words
+        
+        if current_length + sentence_length > max_length:
+            if current_chunk:
+                chunks.append(" ".join(current_chunk))
+            
+            # retain overlap by keeping last `overlap` sentences
+            current_chunk = current_chunk[-overlap:] if overlap > 0 else []
+            current_length = sum(len(sent.split()) for sent in current_chunk)
+        
+        current_chunk.append(sentence)
+        current_length += sentence_length
+
+    if current_chunk:
+        chunks.append(" ".join(current_chunk))
+
     return chunks
 
 # Step 2B: Chunk the dataset
 def chunk_dataset(data, max_length=512, overlap=50):
     """
-    Applies chunking to all text entries in the dataset.
-    
-    data (pd.DataFrame): The input dataset with a column of text.
-    max_length (int): Maximum length of each chunk (in tokens).
-    overlap (int): Overlap between chunks.
-    
+    Applies improved chunking to all text entries in the dataset.
+
+    Args:
+        data (pd.DataFrame): The input dataset with a text column.
+        max_length (int): Maximum number of words per chunk.
+        overlap (int): Number of overlapping words between chunks.
+
     Returns:
         pd.DataFrame: A DataFrame with chunked text data.
     """
     chunked_texts = []
     for text in data[TEXT_COLUMN]:
-        chunks = chunk_text(text, max_length, overlap)
-        chunked_texts.extend(chunks)
-    
+        if isinstance(text, str) and text.strip():
+            chunks = chunk_text(text, max_length, overlap)
+            chunked_texts.extend(chunks)
+
     chunked_df = pd.DataFrame({TEXT_COLUMN: chunked_texts})
     print(f"Chunked dataset into {len(chunked_df)} rows.")
     return chunked_df
@@ -123,27 +147,18 @@ def save_dataset(data):
     print(f"Cleaned dataset saved to: {CLEAN_WIKI_DATA_FILE}")
 
 # Step 4: Prepare BERT Model and Tokenizer
-def load_bert_model():
-    print("Loading BERT model...")
-    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-    model = BertModel.from_pretrained("bert-base-uncased")
-    model.eval()
-    if torch.cuda.is_available():
-        model = model.cuda()
-    return tokenizer, model
+def load_model():
+    print("Loading SentenceTransformer model...")
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    return model
 
 # Step 5: Generate Embeddings
-def generate_embeddings(texts, tokenizer, model, batch_size=BATCH_SIZE):
+def generate_embeddings(texts, model, batch_size=BATCH_SIZE):
     embeddings = []
     for i in range(0, len(texts), batch_size):
         batch = texts[i:i + batch_size]
-        inputs = tokenizer(batch, padding=True, truncation=True, return_tensors="pt", max_length=512)
-        if torch.cuda.is_available():
-            inputs = {key: val.cuda() for key, val in inputs.items()}
-        with torch.no_grad():
-            outputs = model(**inputs)
-            batch_embeddings = outputs.last_hidden_state[:, 0, :].cpu().numpy()  # Use the CLS token representation
-            embeddings.append(batch_embeddings)
+        batch_embeddings = model.encode(batch, convert_to_numpy=True, show_progress_bar=True)
+        embeddings.append(batch_embeddings)
         print(f"Processed {i + len(batch)}/{len(texts)} texts")
     return np.vstack(embeddings)
 
@@ -174,20 +189,24 @@ def main():
     clean_data = clean_dataset(concat_data)
 
     # Chunk the dataset
-    # chunked_data = chunk_dataset(clean_data)
+    #chunked_data = chunk_dataset(clean_data)
 
     # Save the cleaned dataset
     save_dataset(clean_data)
 
-    # Full dataset for testing
+    # Generate embeddings
     texts = clean_data[TEXT_COLUMN].iloc[:].tolist()
     print(f"Loaded {len(texts)} rows of text for embedding.")
+    
+    txt_file_path = "texts_for_embedding.txt"
+    # Save the texts to a .txt file for inspection
+    with open(txt_file_path, "w", encoding="utf-8") as file:
+        for text in texts:
+            file.write(text + "\n")
+    print(f"Saved texts to {txt_file_path} for inspection.")
 
-    # Load BERT model
-    tokenizer, model = load_bert_model()
-
-    # Generate embeddings
-    embeddings = generate_embeddings(texts, tokenizer, model)
+    model = load_model()
+    embeddings = generate_embeddings(texts, model)
 
     # Save embeddings
     save_embeddings(embeddings, EMBEDDINGS_DATA_DIR)
