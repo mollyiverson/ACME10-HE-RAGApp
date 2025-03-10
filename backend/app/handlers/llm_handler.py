@@ -129,7 +129,7 @@ if __name__ == "__main__":
     # Build a vector index and load
     llm_handler.vector_search_handler.build_index(embeddings)
 
-    example_query_text = "Who is Alan Turing?"
+    example_query_text = "What is the requirements engineering book about?"
     example_query_vector = llm_handler.vector_search_handler.embed_query(example_query_text)
 
     # Perform vector search on query vector and embeddings dataset

@@ -1,6 +1,9 @@
 import React, { useState, FormEvent } from 'react';
 import './App.css';
 
+// components
+import Loading from "./components/Loading"; 
+
 type Message = {
   text: string;
   sender: 'user' | 'bot';
@@ -21,6 +24,7 @@ type NlpData = {
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userMessage, setUserMessage] = useState('');
+  const [loading, setLoading] = useState(false); // loading state for response
 
   const callNlpEndpoint = async (query: string): Promise<NlpData> => {
     try {
@@ -109,9 +113,9 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query,
-          vector_results: vectorResults,
-          kg_context: kgContext,
+          query: query,
+          vector_search_results: vectorResults,
+          kg_results: kgContext,
         }),
       });
   
@@ -142,6 +146,7 @@ function App() {
   
     setMessages([...messages, newMessage]);
     setUserMessage('');
+    setLoading(true);
   
     try {
       console.log('User Input: ', userMessage);
@@ -154,8 +159,9 @@ function App() {
         text: `Tokens: ${nlpData.tokens.join(', ')}\nEntities: ${nlpData.entities.map((ent: Entity) => ent.text).join(', ')}\nIs Harmful: ${nlpData.is_harmful}\nSPARQL: ${nlpData.sparql_query}`,
         sender: 'bot',
       };
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
+      // setMessages((prevMessages) => [...prevMessages, botMessage]); // 
       const nlpEndTime = performance.now();
+      console.log(`NLP output: ${botMessage.text}`);
       console.log(`NLP Time: ${nlpEndTime - nlpStartTime} ms`);
   
       // DBpedia Query
@@ -172,9 +178,10 @@ function App() {
           text: `DBpedia Abstract: ${abstractText}`,
           sender: 'bot',
         };
-        setMessages((prevMessages) => [...prevMessages, dbpediaMessage]);
+        // setMessages((prevMessages) => [...prevMessages, dbpediaMessage]);
       }
       const kgEndTime = performance.now();
+      console.log(`DBPedia output: ${dbpediaMessage.text}`);
       console.log(`DBpedia Time: ${kgEndTime - kgStartTime} ms`);
   
       // Vector Search
@@ -184,12 +191,14 @@ function App() {
         text: `Vector Search Results:\n${vectorData.results.join('\n')}`,
         sender: 'bot',
       };
-      setMessages((prevMessages) => [...prevMessages, vectorMessage]);
+      // setMessages((prevMessages) => [...prevMessages, vectorMessage]);
       const vectorSearchEndTime = performance.now();
+      console.log(`VS output: ${vectorMessage.text}`);
       console.log(`Vector Search Time: ${vectorSearchEndTime - vectorSearchStartTime} ms`);  
 
       // Call LLM endpoint
       const llmStartTime = performance.now();
+      console.log(vectorData.results)
       const llmResponse = await callLlmRespond(userMessage, vectorData.results, dbpediaMessage.text)  
       const llmMessage: Message = {
         text: `LLM Response: ${llmResponse}`,
@@ -213,6 +222,9 @@ function App() {
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     }
+    finally {
+      setLoading(false);
+    }
   };
   
   return (
@@ -233,6 +245,7 @@ function App() {
                 {message.text}
               </div>
             ))}
+            {loading && <Loading loadingText="Thinking" />} {/* Show loading indicator while processing query*/}
           </div>
         </div>
 
