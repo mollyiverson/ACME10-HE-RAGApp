@@ -34,11 +34,10 @@ This sprint focused on **scaling up dataset processing**, optimizing search perf
 ## Completed Issues/User Stories
 Here are links to the issues and user stories completed in this sprint:
 
-- [Embed Full Wikipedia Dataset](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/82)  
-- [Improve Vector Search Ranking](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/83)  
-- [Implement CI/CD Pipeline for App Deployment](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/84)  
-- [Integrate Custom Dataset Embeddings](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/85)  
-- [Quality Assurance Testing for RAG Responses](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/86)  
+- [Embed Full Wikipedia Dataset](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/88)  
+- [Improve Vector Search Ranking](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/86)  
+- [Implement CI/CD Pipeline for App Deployment](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/87)  
+- [Integrate Custom Dataset Embeddings](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/80) 
 
 ---
 
@@ -52,10 +51,8 @@ Here are links to the issues and user stories completed in this sprint:
 ## Code Files for Review
 Please review the following files for quality and feedback:
 
-- [backend/app/handlers/embedding_handler.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/handlers/embedding_handler.py) – Handles large dataset embedding generation.  
+- [backend/app/handlers/embeddings_handler.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/handlers/embeddings_handler.py) – Handles large dataset embedding generation.  
 - [backend/app/handlers/vector_search_handler.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/handlers/vector_search_handler.py) – Implements vector search ranking optimizations.  
-- [backend/app/deployment/ci_cd_pipeline.yaml](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/deployment/ci_cd_pipeline.yaml) – Sets up automated CI/CD deployment.  
-- [backend/app/handlers/custom_dataset_handler.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/handlers/custom_dataset_handler.py) – Integrates and processes custom dataset embeddings.  
 
 ---
 
