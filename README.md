@@ -110,7 +110,7 @@ export OPEN_API_KEY=value
    git clone https://github.com/mollyiverson/ACME10-HE-RAGApp.git
    cd ACME10-HE-RAGApp
    ```
-2. **Download Embeddings:** Download the required embedding files from [Google Drive](https://drive.google.com/drive/folders/1_WwirXnxWoHHrr58b_Id6c0k-s_v711N)
+2. **Download Embeddings:** Download the required embedding files from this [Hugging Face repository](https://huggingface.co/datasets/miverson9/acme10-he-ragapp-embeddings/tree/main)
     - Place `text_embeddings.npy` in `backend/app/data_processing/embeddings_data/`
     - Place `index.faiss` in `backend/app/data_processing/vector_search_data/`
 
