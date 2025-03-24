@@ -92,6 +92,7 @@ class LLMHandler:
             - Avoid repeating the input query in your response.
             - Provide only relevant information that answers the query directly.
             - If you couldn't find relevant information from the vector search results or the knowledge graph, try to answer on your own and state how you didn't have additional context.
+            - Provide a response in 150 words or less.
         """
         return query
 

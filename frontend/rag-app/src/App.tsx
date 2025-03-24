@@ -200,6 +200,7 @@ function App() {
       const llmStartTime = performance.now();
       console.log(vectorData.results)
       const llmResponse = await callLlmRespond(userMessage, vectorData.results, dbpediaMessage.text)  
+      console.log(`LLM Response: ${llmResponse}`);
       const llmMessage: Message = {
         text: `${llmResponse}`,
         sender: 'bot',
