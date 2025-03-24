@@ -201,7 +201,7 @@ function App() {
       console.log(vectorData.results)
       const llmResponse = await callLlmRespond(userMessage, vectorData.results, dbpediaMessage.text)  
       const llmMessage: Message = {
-        text: `LLM Response: ${llmResponse}`,
+        text: `${llmResponse}`,
         sender: 'bot',
       };
   
@@ -211,9 +211,6 @@ function App() {
 
       const endTime = performance.now();
       console.log(`Total Time: ${endTime - startTime} ms`);
-      if (endTime - startTime > 600) {
-        console.log("Warning: The response time is too high. Please optimize the code.")
-      }
   
     } catch (error) {
       const errorMessage: Message = {
