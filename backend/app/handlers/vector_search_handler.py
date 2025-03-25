@@ -42,7 +42,7 @@ class VectorSearchHandler:
 
         # Initialize model
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
-\
+
     def load_embeddings(self):
         """Load embeddings from the specified path."""
         if not os.path.exists(self.embedding_path):
@@ -112,6 +112,9 @@ class VectorSearchHandler:
         
         if not valid_indices:
             print(f"Warning: No valid indices found. Received: {indices}")
+            print(f"Total rows in dataset: {len(original_data)}")
+            print(f"Indices received: {indices}")
+
             return []
 
         return original_data.iloc[valid_indices]["text"].tolist()
