@@ -71,7 +71,7 @@ class VectorSearchHandler:
         query_embedding = self.model.encode(query, convert_to_numpy=True)
         
         return query_embedding
-
+   
     def search(self, query_vector, top_k=10, similarity_threshold=0.5):
         """Search the FAISS index with normalized query vector."""
         if self.index is None:
@@ -82,24 +82,42 @@ class VectorSearchHandler:
 
         similarities, indices = self.index.search(query_vector_normalized, top_k)
 
-        # Filter results below the threshold
+        # Filter results below threshold and remove invalid indices (-1)
         filtered_results = [
             (similarity, index)
             for similarity, index in zip(similarities[0], indices[0])
-            if similarity >= similarity_threshold
+            if similarity >= similarity_threshold and index != -1
         ]
 
         if not filtered_results:
-            return [], []  # No results above threshold
+            return [], []  # No valid results
 
         filtered_similarities, filtered_indices = zip(*filtered_results)
-    
-        return list(filtered_similarities), list(filtered_indices)
 
+        return list(filtered_similarities), list(filtered_indices)
+    
     def get_search_results(self, indices, dataset_path=CLEAN_WIKI_DATA_FILE):
         """Get the corresponding texts of the top results."""
+        if not os.path.exists(dataset_path):
+            raise FileNotFoundError(f"Dataset file not found: {dataset_path}")
+
         original_data = pd.read_parquet(dataset_path)
-        return original_data.iloc[indices]["text"].tolist()
+
+        if original_data.empty:
+            print("Warning: original_data is empty!")
+            return []
+
+        # Validate indices
+        valid_indices = [i for i in indices if 0 <= i < len(original_data)]
+        
+        if not valid_indices:
+            print(f"Warning: No valid indices found. Received: {indices}")
+            print(f"Total rows in dataset: {len(original_data)}")
+            print(f"Indices received: {indices}")
+
+            return []
+
+        return original_data.iloc[valid_indices]["text"].tolist()
 
 # Example Usage
 if __name__ == "__main__":
