@@ -35,3 +35,23 @@ def test_query_dbpedia():
                ) > 0, "Expected non-empty bindings from DBpedia"
     abstract_value = result["results"]["bindings"][0]["abstract"]["value"]
     assert abstract_value, test_data["abstract"]
+
+
+def test_query_dbpedia_no_results():
+    subject = encode_resource("NonExistentEntityXYZ")
+    sparql_query = f"""
+    PREFIX dbo: <http://dbpedia.org/ontology/>
+    PREFIX dbr: <http://dbpedia.org/resource/>
+    SELECT ?abstract WHERE {{
+        dbr:{subject} dbo:abstract ?abstract .
+        FILTER (lang(?abstract) = 'en')
+    }}
+    """
+    response = client.post("/dbpedia/querykg",
+                           json={"query": sparql_query})
+    assert response.status_code == 200
+    result = response.json()
+
+    assert "results" in result
+    assert len(result["results"]["bindings"]) == 0, "Expected empty results for non-existent entity"
+
