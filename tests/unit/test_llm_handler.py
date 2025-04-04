@@ -21,14 +21,11 @@ def mock_kg_output():
     return "Connections between NLP and Knowledge Graphs."
 
 
-# def test_format_query(llm_handler, mock_vector_search_results, mock_kg_output):
-#     query = llm_handler.format_query(mock_vector_search_results, mock_kg_output)
-#     assert "Vector Search Results" in query
-#     assert "Knowledge Graph Results" in query
+def test_query_llm_max_length(llm_handler, mock_vector_search_results, mock_kg_output):
+    original_query = "What is the relationship between NLP and Knowledge Graphs?"
+    query = llm_handler.format_query(original_query, mock_vector_search_results, mock_kg_output)
+    response = llm_handler.query_llm(query)
+    
+    assert isinstance(response, str)
+    assert len(response.split()) <= 200, "LLM response exceeds max length constraint"
 
-
-# def test_query_llm(llm_handler, mock_vector_search_results, mock_kg_output):
-#     query = llm_handler.format_query(mock_vector_search_results, mock_kg_output)
-#     response = llm_handler.query_llm(query, max_length=50)
-#     assert isinstance(response, str)
-#     assert len(response) > 0

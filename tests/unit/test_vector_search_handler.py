@@ -33,3 +33,16 @@ def test_search(vector_search_handler, dummy_embeddings):
     distances, indices = vector_search_handler.search(query, top_k=3)
     assert len(indices) == 3  # Ensure we get 3 results
     assert distances[0] == max(distances)  # Ensure closest match does have the max similarity score retrieved
+
+
+def test_vector_search_large_embeddings():
+    """Test vector search efficiency on large datasets."""
+    large_embeddings = np.random.random((100000, 128)).astype(np.float32)  # 100K vectors
+    handler = VectorSearchHandler(embedding_path="large_embeddings.npy")
+    handler.build_index(large_embeddings)
+
+    query = np.expand_dims(large_embeddings[0], axis=0)
+    distances, indices = handler.search(query, top_k=5)
+
+    assert len(indices) == 5  # Ensure retrieval of 5 nearest neighbors
+    assert max(distances) == distances[0]  # Closest match should have the highest similarity score

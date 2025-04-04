@@ -70,3 +70,15 @@ def test_process_query_multiple_entities():
     assert len(data["entities"]) > 1
     assert any(ent["text"] == "the Eiffel Tower" for ent in data["entities"])
     assert any(ent["text"] == "Paris" for ent in data["entities"])
+
+
+def test_process_query_ambiguous_entity():
+    response = client.post("/nlp/process_query",
+                           json={"query": "Tell me about Paris and Washington."})
+    assert response.status_code == 200
+    data = response.json()
+    
+    # Ensure both "Paris" and "Washington" are extracted
+    entity_texts = {ent["text"] for ent in data["entities"]}
+    assert "Paris" in entity_texts
+    assert "Washington" in entity_texts
