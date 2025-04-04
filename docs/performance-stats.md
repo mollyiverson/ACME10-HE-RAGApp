@@ -51,14 +51,14 @@ The LLaMA 2.7b model doesn't work on Molly's computer and exhausts memory and CP
 
 ---
 
-#### Change 2: 
+#### Final Stats
 | Component          | Call 1 (ms) | Call 2 (ms) | Call 3 (ms) | Average (ms) |
 |---------------------|-------------|-------------|-------------|--------------|
-| NLP Handler         |             |             |             |              |
-| Knowledge Graph     |             |             |             |              |
-| Vector Search       |             |             |             |              |
-| LLM                 |             |             |             |              |
-| **Total**           |             |             |             |              |
+| NLP Handler         |36.40        |27.40        |36.40        |33.40         |
+| Knowledge Graph     |1498.20      |1392.70      |1212.30      |1367.73       |
+| Vector Search       |3717.20      |4672.20      |4011.20      |4133.53       |
+| LLM                 |2527.00      |1884.80      |1827.29      |2079.70       |
+| **Total**           |7779.70      |7977.60      |7087.90      |7615.07       |
 
 ---
 
