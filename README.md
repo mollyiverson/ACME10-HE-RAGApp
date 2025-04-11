@@ -143,11 +143,11 @@ Set up two terminals.
 5. **Run Frontend in terminal 2:**
 
     - Download [Node.js (LTS)](https://nodejs.org/en)
-  ```bash
-  cd frontend/rag-app
-  npm install
-  npm start
-  ```
+    ```bash
+    cd frontend/rag-app
+    npm install
+    npm start
+    ```
 
 The application should now be running on `localhost:3000` for both frontend and backend.
 

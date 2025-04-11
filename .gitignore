@@ -30,7 +30,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # index
-index.faiss
+*.faiss
 
 # embeddings
 text_embeddings.npy
