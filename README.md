@@ -6,6 +6,10 @@
 
 We developed a RAG (Retrieval-Augmented Generation) application for [HackerEarth](https://www.hackerearth.com/) that utilizes vector search, knowledge graphs, and an LLM to answer questions and generate content from a knowledge base of more than 10,000 Wikipedia articles.
 
+### Project Demo
+
+[Demo link](https://www.youtube.com/watch?v=QuenU0tsGSU)
+
 ### Additional information about the project
 
 - **Client:**
