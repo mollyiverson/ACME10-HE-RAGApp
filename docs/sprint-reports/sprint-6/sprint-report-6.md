@@ -3,74 +3,65 @@
 [Sprint 6 Video Link](https://youtu.be/QsSqxX80UCc)
 
 ---
-##################### TODO: EDIT EVERYTHING BELOW THIS #####################
 
 ## What's New (User Facing)
-- Successfully embedded and indexed the full **Wikipedia dataset**, improving knowledge retrieval capabilities.
-- Optimized **vector search ranking** by implementing **threshold filtering** and switching to a **SentenceTransformer model**, enhancing search relevance.
-- Developed a **CI/CD pipeline** for streamlined app deployment, making installation and updates easier.
-- Integrated **custom dataset embeddings** (e.g., class notes) to test adaptability and specialization of the RAG model.
-- Enhanced **quality assurance** by testing a wide variety of queries and refining the UI for better user experience.
+- Created a final presentation to share the project with our client.
+- Developed two project videos: a 2–3 minute overview for LinkedIn and a 30-second project pitch.
+- Designed and finalized a poster for the capstone poster session.
+- Added safety instructions to the LLM to block responses related to self-harm, suicide, or hate if the user's intent is harmful.
+- Finalized and submitted the project report, summarizing the system architecture, evaluation, and results.
 
 ---
 
 ## Work Summary (Developer Facing)
-This sprint focused on **scaling up dataset processing**, optimizing search performance, and improving **app deployment and usability**.
+This sprint focused on presentation preparation, documentation finalization, and responsible AI improvements.
 
-- **Ethan** worked on generating and indexing **large-scale Wikipedia embeddings**, handling over **5GB** of data, and refining chunking strategies to balance retrieval accuracy and efficiency.
-- **Chandler** improved **vector search** accuracy, tested different **query optimization techniques**, and conducted **QA testing** by evaluating the system with diverse question types.
-- **Molly** packaged the application with **Docker** and set up a **CI/CD pipeline** for seamless deployment, ensuring easy setup and updates across different systems.
-- **Adam** integrated a **custom dataset** into the embedding workflow, allowing **domain-specific embeddings** for more personalized RAG responses.
-- **All Team Members** contributed to writing and refining the **final project report**, recording client meetings, and preparing for the **poster presentation and research paper**.
+- **Ethan** created the poster for the capstone poster session.
+- **Chandler** created the 2-3 minute video for LinkedIn.
+- **Molly** finalized the project report and created the final client presentation. Also, added the extra instructions for the LLM.
+- **Adam** organized and edited the 30 second video. 
 
 ---
 
 ## Unfinished Work
-- Further refinement of **vector search ranking filters** for improved accuracy.
-- Additional **testing with diverse queries** to evaluate performance across different dataset embeddings.
-- Final optimization of **custom dataset embeddings** for specialized use cases.
+None
 
 ---
 
 ## Completed Issues/User Stories
 Here are links to the issues and user stories completed in this sprint:
 
-- [Embed Full Wikipedia Dataset](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/88)  
-- [Improve Vector Search Ranking](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/86)  
-- [Implement CI/CD Pipeline for App Deployment](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/87)  
-- [Integrate Custom Dataset Embeddings](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/80) 
+- [Create 2-3 minute professional video](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/101)  
+- [Create 30-second pitch video](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/99)
+- [Create final poster](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/102)
+- [Create final client presentation slides](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/103)
+- [Write sprint report](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/106)
+- [Edit LLM instructions](https://github.com/mollyiverson/ACME10-HE-RAGApp/issues/105)
 
 ---
 
 ## Incomplete Issues/User Stories
-- Further **vector search refinement** and **threshold-based ranking adjustments**.
-- Expanding **test coverage for dataset embeddings** with more diverse question types.
-- Additional **performance evaluations** for different embedding strategies.
-
+N/A
 ---
 
 ## Code Files for Review
 Please review the following files for quality and feedback:
 
-- [backend/app/handlers/embeddings_handler.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/handlers/embeddings_handler.py) – Handles large dataset embedding generation.  
-- [backend/app/handlers/vector_search_handler.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/handlers/vector_search_handler.py) – Implements vector search ranking optimizations.  
+- [backend/app/handlers/llm_handler.py](https://github.com/mollyiverson/ACME10-HE-RAGApp/blob/main/backend/app/handlers/llm_handler.py) – Contains LLM instructions.  
 
 ---
 
 ## Retrospective Summary
 ### What Went Well:
-* **Successfully embedded the full Wikipedia dataset**, enabling broader knowledge retrieval.  
-* **Implemented CI/CD deployment**, making it easier to install and update the application.  
-* **Improved vector search accuracy**, ensuring **higher-quality responses** to user queries.  
-* **Integrated a custom dataset**, expanding RAG model capabilities beyond Wikipedia.  
+* Produced a polished and professional client presentation and video materials.
+* Successfully incorporated responsible AI practices into the system.
+* Finalized and submitted the project report on time.
+* Designed an effective and visually appealing poster.
 
 ### What Needs Improvement:
-* Further fine-tuning of **vector search ranking filters** for **better search precision**.  
-* Additional **query-based testing** for evaluating different dataset embeddings.  
-* Finalizing **performance optimization strategies** before deployment.  
+* More time could have been spent testing prompt variations for content filtering.
 
 ### Planned Changes for the Next Sprint:
-* **Refine vector search filtering and expand query testing.**  
-* **Continue embedding evaluation and verify response performance.**  
-* **Prepare for final poster and client presentations.**  
-* **Finalize research paper and document key findings.**
+N/A
+* Client Presentation on 4/11
+* Poster Showcase on 4/22
