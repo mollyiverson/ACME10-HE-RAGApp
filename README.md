@@ -36,12 +36,7 @@ If you prefer to use the pre-built Docker images instead of setting up the proje
   pip install docker-compose
   ```
 
-- **LLM API Key:** Ensure you have an OpenAI key saved in your environment
-
-```bash
-# For Linux
-export OPEN_API_KEY=value
-```
+- **LLM API Key:** Ensure you have an OpenAI key 
 
 ### Running the Application
 
@@ -65,13 +60,15 @@ export OPEN_API_KEY=value
 
    Or, download it manually from the repository. Keep it in the same location you used to pull the docker images.
 
-4. **Start the Containers:**
+4. **Add your OpenAI API key to the docker-compose.yml file**
+
+5. **Start the Containers:**
 
    ```bash
    docker-compose up
    ```
 
-5. **Access the Application:**
+6. **Access the Application:**
    - Open your browser and go to `http://localhost:3000`.
 
 ### Stopping and Cleaning Up
